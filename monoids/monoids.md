@@ -37,24 +37,94 @@ which must obey to a set of rules:
   of our final computation. 
 * We can take two clocks and build a new one where the hour is given by
   the sum of the two. In other terms we have a *binary operation* which we'll call
-  *mappend*.
+  *⊕*.
 
+## A formal definition
+A monoid is a structure *(R, ⊕, u)* where *R* is a set, *⊕* is a binary operation on *R*
+and *u* is the identity element on *R*, and these laws holds:
+
+```
+(r ⊕ s) ⊕ t = r ⊕ (s ⊕ t)
+u ⊕ r = r
+r ⊕ u = r
+```
+
+Even if those laws might seem daunting at first, they are quite simple:
+
+* The first one says that no matter how we "sum" things, we'll always
+  yield the same result
+* The last twos just say that no matter when we "sum" the unit element
+  *u*, we'll never affect the overall result.
+
+Sounds familiar?
 
 ### Sums and Products
 
-* Explain why, by-default we can't do "mempty :: Int".
+If the answer was yes, it's just because I played a dirty trick on
+you when I introduced the word "sum" in the description. For the
+rest of the article, we'll succinctly describe our ideas through
+Haskell, a purely functional programming language you might be
+familiar with. Not only is Haskell a fantastic tool for things
+like that, but its math roots causes Monoids to be part of the
+language itself! If you are not familiar with Haskell don't worry,
+we'll explain things along the way. As said, in Haskell a Monoid
+is a first class citizen, and its definition as well as useful
+functions live in a module called ``Data.Monoid`` that you can
+import to play around. Let's take a look at this snippet of code:
+
 
 ```
 module Main where
 
 import Data.Monoid
 
-newtype MySum = MySum { getSum :: Int } deriving (Show)
+newtype MySum = MySum { getSum :: Int } deriving (Show, Eq)
 
 instance Monoid MySum where
     mempty = MySum 0
     mappend (MySum x) (MySum y) = MySum (x + y)
 
+```
+
+It might seems a lot to absorb at first, but it's easier
+than it looks. First of all, we want to define a new
+datatype called ``MySum``, and we want
+also to make it a Monoid. We do this through Haskell's
+typeclasses, a delightful way to express particular
+properties our datatypes should stick to. A ``Monoid``
+typeclass, which lives in ``Data.Monoid`` expects us to
+fully implement at least two functions, ``mempty`` and
+``mappend``. Sounds familiar? Let's check ``MySum`` is
+actually a ``Monoid``:
+
+```
+-- <> is just the infix version of mappend
+isMonoid :: MySum -> Bool
+isMonoid s1@(MySum _) = prop1 && prop2 && prop3
+  where
+    prop1 = let s2 = MySum 10
+                s3 = MySum 5
+            in (s1 <> (s2 <> s3)) == ((s1 <> s2) <> s3)
+    prop2 = (mempty <> s1) == s1
+    prop3 = (s1 <> mempty) == s1
+```
+
+If you try this in the REPL you'll see ``True`` displayed.
+Granted, this is a sort of "poor-man-proof", and in case
+we needed more power we probably would have used a proper
+tool like ``QuickCheck`` (which I recommend). Have you
+noticed? We have just proved that the laws hold, let's
+rewrite them with our Haskell notation:
+
+```
+(r <> s) <> t = r <> (s <> t)
+u ⊕ r = r
+r ⊕ u = r
+```
+
+
+
+```
 newtype MyProd = MyProd { getProd :: Int } deriving (Show)
 
 instance Monoid MyProd where
@@ -69,17 +139,6 @@ main = let s1 = MySum 10
        in do
            print . show $ s1 <> s2
            Print . show $ m1 <> m2
-```
-
-
-## A formal definition
-A monoid is a structure *(R, ⊕, u)* where *R* is a set, *⊕* is a binary operation on *R*
-and *u* is the identity element on *R*, and these laws holds:
-
-```
-(r ⊕ s) ⊕ t = r ⊕ (s ⊕ t)
-1 ⊕ r = r
-r ⊕ 1 = r
 ```
 
 
