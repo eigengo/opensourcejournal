@@ -39,7 +39,7 @@ which must obey to a set of rules:
   the sum of the two. In other terms we have a *binary operation* which we'll call
   *⊕*.
 
-## A formal definition
+### A formal definition
 A monoid is a structure *(R, ⊕, u)* where *R* is a set, *⊕* is a binary operation on *R*
 and *u* is the identity element on *R*, and these laws holds:
 
@@ -57,6 +57,7 @@ Even if those laws might seem daunting at first, they are quite simple:
   *u*, we'll never affect the overall result.
 
 Sounds familiar?
+
 
 ### Sums and Products
 
@@ -113,15 +114,17 @@ If you try this in the REPL you'll see ``True`` displayed.
 Granted, this is a sort of "poor-man-proof", and in case
 we needed more power we probably would have used a proper
 tool like ``QuickCheck`` (which I recommend). Have you
-noticed? We have just proved that the laws hold, let's
+noticed? We have just "proved" that the laws hold, let's
 rewrite them with our Haskell notation:
 
 ```
 (r <> s) <> t = r <> (s <> t)
-u ⊕ r = r
-r ⊕ u = r
+mempty <> r = r
+r <> mempty = r
 ```
 
+Et voilà, the Monoid is served! We can of course do the
+same for multiplication:
 
 
 ```
@@ -138,44 +141,85 @@ main = let s1 = MySum 10
            m2 = MyProd 3
        in do
            print . show $ s1 <> s2
-           Print . show $ m1 <> m2
+           print . show $ m1 <> m2
+```
+
+The implementation is exactly the same, the only thing which
+changes is the `newtype` name and the binary operation. As
+this regards, when I started looking at Monoids in Haskell
+I was confused on why I couldn't simply do something like
+this in the REPL:
+
+```
+let x = mempty :: Int
+<interactive>:3:9:
+    No instance for (Monoid Int) arising from a use of `mempty'
+    Possible fix: add an instance declaration for (Monoid Int)
+    In the expression: mempty :: Int
+    In an equation for `x': x = mempty :: Int
+```
+
+The problem is that how can possibly the compiler gives us back
+a Monoid if we haven't specified a binary operation! An Int
+can be used to form a Monoid around the `+` operation (already
+defined in Haskell as `Sum`) or the `*` operation (already
+defined in Haskell as `Prod`). For other types, where there is
+no such ambiguity, everything works as expected:
+
+```
+let y = mempty :: [Int]
+
+> []
 ```
 
 
+### Strings and Lists
 
-### Example x: Trees
+The last example unravel that, maybe unsurprisingly, lists are
+Monoid too, where its definition is:
+
+```
+instance Monoid [a] where
+        mempty  = []
+        mappend = (++)
+```
+
+Due to the fact that in Haskell a `String` is a type synonym
+for `[Char]`, it comes as no surprise that strings are Monoid too:
 
 ```
 import Data.Monoid
 
-data Tree a = Leaf a | Node (Tree a) (Tree a)
-
-instance Monoid Tree where
-    mempty = Leaf
-    mappend = undefined
-```
-
-
-
-
-### Example x: Strings
-
-Using `mappend` and `mempty` is way too easy for builtin `String`:
-```
-import Data.Monoid
-
+w1 :: String
 w1 = "foo"
+
+w2 :: [Char]
 w2 = "bar"
+
+w3 :: String
 w3 = w1 <> w2 <> mempty
 
+main :: IO ()
 main = print w3
 ```
 
-Notice how GHC is smart enough to recognize that we want to call the
-`mempty` instance specific for the `String` type.
+I've put the type signature on purpose, to show how Haskell treat
+indifferently `String` and `[Char]`. Also notice how GHC is
+smart enough to recognize that we want to call the `mempty`
+instance specific for the `String` type.
 
-### Example x: Functions
-Finally
+### Functions
+The last example I'll show you is about plain simple functions:
+it turns out that functions form a monoidal category closed on
+function composition! If you think about that, composing a
+function is exactly the `mappend` operation we encountered for
+the other examples. But what about the identity element? Well,
+as you probably know, there is a function which acts exactly
+like that... is the `id` function!
+
+```
+id :: a -> a
+```
 
 ## Why do Monoids matter?
 
@@ -187,4 +231,3 @@ fair question, and I'm going to answer it with just one word: **abstraction**.
 
 * "Don't fear the monad by Brian Beckman" - where the clock example was taken.
 * "Introduction to Category Theory by Simmons"
-
