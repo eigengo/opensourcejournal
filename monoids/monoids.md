@@ -236,7 +236,7 @@ from the signature? One possibility is to use `Endo`, cryptically
 defined as "the endomorphism under function composition": we won't
 dig too much into it, all you need to know is that it is a
 morphism (a structure-preserving transformation) from an entity to
-itself. Let's assume we have definited two toy functions, `squareIt`
+itself. Let's assume we have defined two toy functions, `squareIt`
 and `sumIt` this way:
 
 ```
@@ -273,12 +273,12 @@ If you try this code in the REPL, you'll see the results are the same.
 After all this digression, you might think: why on earth should I worry
 about monoids in my everyday programming activity? This is certainly a
 fair question, and I'm going to answer it with just one word: **abstraction**.
-Dealing with data structures we know are Monoids allow us to exploit this
+Dealing with data structures we know are monoids allow us to exploit this
 information to write generic code; after all, we are guaranteed (by the
 type system) that we can always "mappend" two monoids together or generate
 the unit element for a given type which is also a Monoid. I'll conclude
 this article showing you a neat trick: we'll write a generic traversal
-function on a tree, where we'll store a monoid into each node; we then
+function on a tree, where we'll store a `Monoid` into each node; we then
 fold the tree accumulating the values as we proceed. Programming with
 recursive data structure is also called _origami programming_:
 
@@ -353,5 +353,13 @@ waiting for? There is a world full of `Monoid` out there, go and
 
 ## References
 
-* "Don't fear the monad by Brian Beckman" - where the clock example was taken.
-* "Introduction to Category Theory by Simmons"
+* "Don't fear the monad by Brian Beckman" - where the clock example was taken:
+  http://www.youtube.com/watch?v=ZhuHCtR3xq8
+* Learn you a Haskell for Great Good - The best book on Haskell out there:
+  http://learnyouahaskell.com/
+* A great article on monoids by Dan Piponi:
+  http://blog.sigfpe.com/2009/01/haskell-monoids-and-their-uses.html
+* Another blog post on data analysis using monoids, which also describes
+  "Traversable", which was left out in this article:
+  http://twdkz.wordpress.com/2013/05/31/data-analysis-with-monoids/
+* Fizz Buzz revised, using monoid: http://dave.fayr.am/posts/2012-10-4-finding-fizzbuzz.html
