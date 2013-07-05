@@ -283,8 +283,73 @@ fold the tree accumulating the values as we proceed. Programming with
 recursive data structure is also called _origami programming_:
 
 ```
+import Data.Monoid
 
+data Tree a = Leaf a | Node a (Tree a) (Tree a) deriving (Eq, Show)
+
+genericFold :: (Monoid a) => Tree a -> a
+genericFold t = go t mempty
+  where
+    go :: (Monoid a) => Tree a -> a -> a
+    go (Leaf v) acc = v <> acc
+    go (Node v t1 t2) acc = v <> (go t1 acc) <> (go t2 acc)
+
+
+treeOfSum :: Tree (Sum Int)
+treeOfSum = Node (Sum 5)
+             (Node (Sum 6) (Leaf (Sum 8)) (Leaf (Sum 4)))
+             (Leaf (Sum 2))
+            
+treeOfProd :: Tree (Product Int)
+treeOfProd = Node (Product 5)
+              (Node (Product 6) (Leaf (Product 8)) (Leaf (Product 4)))
+              (Leaf (Product 2))
+
+treeOfLists :: Tree [Int]
+treeOfLists = Node [5, 5]
+               (Node [] (Leaf [1,2]) (Leaf [4,90]))
+               (Leaf mempty)
+
+f1 :: (Num a) => a -> a
+f1 = (2*)
+
+treeOfEndos :: (Num a) => Tree (Endo a)
+treeOfEndos = Node (Endo f1)
+               (Node (Endo id) (Leaf (Endo f1)) (Leaf (Endo f1)))
+               (Leaf (Endo f1))
+
+
+main :: IO ()
+main = do
+  print . show $ genericFold treeOfSum
+  print . show $ genericFold treeOfProd
+  print . show $ genericFold treeOfLists
+  print . show $ appEndo (genericFold treeOfEndos) 8
 ```
+
+It's quite a long snippet, but you already know most of
+the characters of this movie. The only new bit is a _sum type_
+describing our `Tree`: as you can see it's actually a recursive
+data structure. The main character here is the `genericFold`
+function: We impose in the signature that our `Tree` should hold
+in each node a `Monoid`: exploiting this information we are
+*guaranteed* that we could always "mappend" thing together, and
+this is exactly what we do in the `go` auxiliary function, handling
+the case we reached a `Left` or we need to continue further in case
+of a `Node`. Take a look at how exciting is the latest case: we
+fold the tree, composing functions along the way, to yield one big
+function which can be invoked with `appEndo` on a generic numeric
+argument!
+
+## Conclusions
+In this article, I've tried to convey the concept that `Monoid` aren't
+extraterrestrial, we use them everyday! They give us an incredible
+abstraction power: you can feed into `genericFold` any datatype which
+define an instance of the `Monoid` type class, and everything will
+continue working. This also applies with other "famous" libraries in
+the Haskell ecosystem, such as `bytestring` or `text`. What are you
+waiting for? There is a world full of `Monoid` out there, go and
+"mappend" them all!
 
 ## References
 
