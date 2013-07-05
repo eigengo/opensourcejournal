@@ -273,6 +273,18 @@ If you try this code in the REPL, you'll see the results are the same.
 After all this digression, you might think: why on earth should I worry
 about monoids in my everyday programming activity? This is certainly a
 fair question, and I'm going to answer it with just one word: **abstraction**.
+Dealing with data structures we know are Monoids allow us to exploit this
+information to write generic code; after all, we are guaranteed (by the
+type system) that we can always "mappend" two monoids together or generate
+the unit element for a given type which is also a Monoid. I'll conclude
+this article showing you a neat trick: we'll write a generic traversal
+function on a tree, where we'll store a monoid into each node; we then
+fold the tree accumulating the values as we proceed. Programming with
+recursive data structure is also called _origami programming_:
+
+```
+
+```
 
 ## References
 
