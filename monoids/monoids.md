@@ -221,6 +221,53 @@ like that... is the `id` function!
 id :: a -> a
 ```
 
+As a matter of fact, `Data.Monoid` already defines an instance
+of `Monoid` as such:
+
+```
+instance Monoid b => Monoid (a -> b) where
+        mempty _ = mempty
+        mappend f g x = f x `mappend` g x
+```
+
+But the problem here is that it assumes `b` should be a
+`Monoid`. How can we make it work for each function, regardless
+from the signature? One possibility is to use `Endo`, cryptically
+defined as "the endomorphism under function composition": we won't
+dig too much into it, all you need to know is that it is a
+morphism (a structure-preserving transformation) from an entity to
+itself. Let's assume we have definited two toy functions, `squareIt`
+and `sumIt` this way:
+
+```
+sumIt :: (Num a) => a -> a
+sumIt x = x + x
+
+squareIt :: (Num a) => a -> a
+squareIt x = x * x
+```
+
+We could compose the two functions the usual way, or "mappending" them
+using `Endo`, yielding the same result in both cases:
+
+```
+import Data.Monoid
+
+h :: (Num a) => a -> a
+h = squareIt . sumIt
+
+h' :: (Num a) => Endo a
+h' = Endo squareIt <> Endo sumIt
+
+-- We use appEndo to "extract" the final function.
+main :: IO ()
+main = do
+    print $ h 10
+    print $ appEndo h' 10
+```
+
+If you try this code in the REPL, you'll see the results are the same.
+
 ## Why do Monoids matter?
 
 After all this digression, you might think: why on earth should I worry
