@@ -1,16 +1,16 @@
 
-## Monoids are everywhere - You just weren't aware of them.
+# Monoids are everywhere - You just weren't aware of them.
 
 They are among us: you use them during your everyday life, while waiting for
 the bus, when programming, when going out for a walk in the park or when doing
 some math. In this brief journey into category
-theory we'll meet Monoids, powerful structures you have been using since you
+theory we'll meet _monoids_, powerful structures you have been using since you
 were a child. You don't trust me? Fair enough, I'll show you that there
 is nothing intimidating about them, and they are indeed quite a powerful
 abstraction tool, relevant not only in math but also in programming.
 
 
-### A clock
+## A clock
 Let's first point our attention to something as simple as a clock. To simplify a bit
 and build our intuition, let's imagine our clock has only the hour hand, and let's
 assume our clock makes no distinction between the 24 and the 12h format. In other terms,
@@ -39,8 +39,8 @@ which must obey to a set of rules:
   the sum of the two. In other terms we have a *binary operation* which we'll call
   *⊕*.
 
-### A formal definition
-A monoid is a structure *(R, ⊕, u)* where *R* is a set, *⊕* is a binary operation on *R*
+## A formal definition
+A _monoid_ is a structure *(R, ⊕, u)* where *R* is a set, *⊕* is a binary operation on *R*
 and *u* is the identity element on *R*, and these laws holds:
 
 ```
@@ -53,26 +53,29 @@ Even if those laws might seem daunting at first, they are quite simple:
 
 * The first one says that no matter how we "sum" things, we'll always
   yield the same result
-* The last twos just say that no matter when we "sum" the unit element
+* The last two just say that no matter when we "sum" the unit element
   *u*, we'll never affect the overall result.
 
 Sounds familiar?
 
 
-### Sums and Products
+## Sums and Products
 
 If the answer was yes, it's just because I played a dirty trick on
 you when I introduced the word "sum" in the description. For the
 rest of the article, we'll succinctly describe our ideas through
 Haskell, a purely functional programming language you might be
 familiar with. Not only is Haskell a fantastic tool for things
-like that, but its math roots causes Monoids to be part of the
+like that, but its math roots causes _monoids_ to be part of the
 language itself! If you are not familiar with Haskell don't worry,
-we'll explain things along the way. As said, in Haskell a Monoid
+we'll explain things along the way. As said, in Haskell a _monoid_
 is a first class citizen, and its definition as well as useful
 functions live in a module called ``Data.Monoid`` that you can
-import to play around. Let's take a look at this snippet of code:
-
+import to play around. To build up the intuition around _monoids_
+I'm going to implement from scratch two data structures already
+defined in `Data.Monoid` as `Sum` and `Product`. In the last
+example of the article we'll eventually switch to them.
+Without further ado let's take a look at this snippet of code:
 
 ```
 module Main where
@@ -87,16 +90,30 @@ instance Monoid MySum where
 
 ```
 
+If you never programmed in Haskell, you probably need to know
+that we are defining a new datatype called `MySum` through
+the keyword `newtype`. What is on the right hand side is the
+type constructor (here again, `MySum`), whereas the curly brackets
+are Haskell's syntax for _records_. If you come from an Object
+Oriented background, for the purposes of this article it won't
+harm to think about that as _objects_. Records' fields are automatically
+converted into accessors function in Haskell, so that you can
+refer to the inner value this way:
+
+```
+mySum = MySum 10
+print $ getSum mySum
+```
+
 It might seems a lot to absorb at first, but it's easier
-than it looks. First of all, we want to define a new
-datatype called ``MySum``, and we want
-also to make it a Monoid. We do this through Haskell's
+than it looks. After we defined our datatype, we want
+also to make it a _monoid_. We'll do this through Haskell's
 typeclasses, a delightful way to express particular
 properties our datatypes should stick to. A ``Monoid``
 typeclass, which lives in ``Data.Monoid`` expects us to
 fully implement at least two functions, ``mempty`` and
-``mappend``. Sounds familiar? Let's check ``MySum`` is
-actually a ``Monoid``:
+``mappend``. Sounds familiar? Let's check that ``MySum`` is
+actually a _monoid_:
 
 ```
 -- <> is just the infix version of mappend
@@ -110,12 +127,14 @@ isMonoid s1@(MySum _) = prop1 && prop2 && prop3
     prop3 = (s1 <> mempty) == s1
 ```
 
-If you try this in the REPL you'll see ``True`` displayed.
-Granted, this is a sort of "poor-man-proof", and in case
-we needed more power we probably would have used a proper
-tool like ``QuickCheck`` (which I recommend). Have you
-noticed? We have just "proved" that the laws hold, let's
-rewrite them with our Haskell notation:
+If you try this snippet in the REPL, you'll see ``True`` displayed.
+Granted, this is a sort of _poor man's proof_, and in case
+we needed a more rigorous proof we probably would have used a proper
+library like _QuickCheck_ designed to assist in software testing by
+automatically generating test cases, and testing our functions against
+properties we wrote for them. But now back to business; Have you noticed?
+We have just "proved" that the laws hold, confirming that `MySum` is
+a _monoid_! Let's rewrite them with our Haskell notation:
 
 ```
 (r <> s) <> t = r <> (s <> t)
@@ -123,9 +142,9 @@ mempty <> r = r
 r <> mempty = r
 ```
 
-Et voilà, the Monoid is served! We can of course do the
-same for multiplication:
-
+Et voilà, the _monoid_ is served! We can of course do the
+same for multiplication, picking up from were we left the
+previous snippet:
 
 ```
 newtype MyProd = MyProd { getProd :: Int } deriving (Show)
@@ -145,8 +164,8 @@ main = let s1 = MySum 10
 ```
 
 The implementation is exactly the same, the only thing which
-changes is the `newtype` name and the binary operation. As
-this regards, when I started looking at Monoids in Haskell
+is being added is the `newtype` name and the binary operation. As
+this regards, when I started looking at _monoids_ in Haskell
 I was confused on why I couldn't simply do something like
 this in the REPL:
 
@@ -160,11 +179,11 @@ let x = mempty :: Int
 ```
 
 The problem is that how can possibly the compiler gives us back
-a Monoid if we haven't specified a binary operation! An Int
-can be used to form a Monoid around the `+` operation (already
-defined in Haskell as `Sum`) or the `*` operation (already
-defined in Haskell as `Prod`). For other types, where there is
-no such ambiguity, everything works as expected:
+a `Monoid` if we haven't specified a binary operation! An `Int`
+can be used to form a `Monoid` closed under the `+` operation
+(`Sum`, defined in `Data.Monoid`) or the `*` operation (the
+`Product` datatype). For other types, where there is no
+such ambiguity, everything works as expected:
 
 ```
 let y = mempty :: [Int]
@@ -173,19 +192,20 @@ let y = mempty :: [Int]
 ```
 
 
-### Strings and Lists
+## Strings and Lists
 
 The last example unravel that, maybe unsurprisingly, lists are
-Monoid too, where its definition is:
+_monoids_ too, where their definition is:
 
 ```
 instance Monoid [a] where
-        mempty  = []
-        mappend = (++)
+    mempty  = []
+    mappend = (++)
 ```
 
 Due to the fact that in Haskell a `String` is a type synonym
-for `[Char]`, it comes as no surprise that strings are Monoid too:
+(syntactic sugar for the programmer) for `[Char]`,
+it comes as no surprise that strings are _monoids_ too:
 
 ```
 import Data.Monoid
@@ -204,11 +224,12 @@ main = print w3
 ```
 
 I've put the type signature on purpose, to show how Haskell treat
-indifferently `String` and `[Char]`. Also notice how GHC is
-smart enough to recognize that we want to call the `mempty`
-instance specific for the `String` type.
+indifferently `String` and `[Char]`. Also notice how GHC (the
+Haskell compiler) is smart enough to recognize
+that we want to call the `mempty` instance specific for
+the `String` type.
 
-### Functions
+## Functions
 The last example I'll show you is about plain simple functions:
 it turns out that functions form a monoidal category closed on
 function composition! If you think about that, composing a
@@ -219,6 +240,7 @@ like that... is the `id` function!
 
 ```
 id :: a -> a
+id x = x
 ```
 
 As a matter of fact, `Data.Monoid` already defines an instance
@@ -226,18 +248,18 @@ of `Monoid` as such:
 
 ```
 instance Monoid b => Monoid (a -> b) where
-        mempty _ = mempty
-        mappend f g x = f x `mappend` g x
+    mempty _ = mempty
+    mappend f g x = f x `mappend` g x
 ```
 
 But the problem here is that it assumes `b` should be a
 `Monoid`. How can we make it work for each function, regardless
-from the signature? One possibility is to use `Endo`, cryptically
+from the signature? Here we'll explore the use of `Endo`, cryptically
 defined as "the endomorphism under function composition": we won't
 dig too much into it, all you need to know is that it is a
-morphism (a structure-preserving transformation) from an entity to
-itself. Let's assume we have defined two toy functions, `squareIt`
-and `sumIt` this way:
+morphism (a structure-preserving transformation) from a mathematical
+object (here, a function) to itself.
+Let's assume we have defined two toy functions, `squareIt` and `sumIt` this way:
 
 ```
 sumIt :: (Num a) => a -> a
@@ -280,7 +302,11 @@ the unit element for a given type which is also a Monoid. I'll conclude
 this article showing you a neat trick: we'll write a generic traversal
 function on a tree, where we'll store a `Monoid` into each node; we then
 fold the tree accumulating the values as we proceed. Programming with
-recursive data structure is also called _origami programming_:
+recursive data structure is also called _origami programming_. Let's start
+by defining a `Tree` datatype and the generic folding function, as well as
+some sample data we'll use to test our `genericFold`. Also notice how we
+are using the builtin's Haskell _monoids_ `Sum` and `Product`, but their
+implementation is the same of `MySum` and `MyProd`:
 
 ```
 import Data.Monoid
@@ -328,9 +354,10 @@ main = do
 ```
 
 It's quite a long snippet, but you already know most of
-the characters of this movie. The only new bit is a _sum type_
-describing our `Tree`: as you can see it's actually a recursive
-data structure. The main character here is the `genericFold`
+the actors of this movie. The only new bit is a _sum type_
+describing our `Tree`, which recursive implementation shouldn't
+be different from the classic one cited in most computer
+science books. The real star here is the `genericFold`
 function: We impose in the signature that our `Tree` should hold
 in each node a `Monoid`: exploiting this information we are
 *guaranteed* that we could always "mappend" thing together, and
@@ -342,13 +369,13 @@ function which can be invoked with `appEndo` on a generic numeric
 argument!
 
 ## Conclusions
-In this article, I've tried to convey the concept that `Monoid` aren't
-extraterrestrial, we use them everyday! They give us an incredible
+In this article, I've tried to convey the concept that _monoids_ aren't
+alien, we use them everyday! They give us an incredible
 abstraction power: you can feed into `genericFold` any datatype which
-define an instance of the `Monoid` type class, and everything will
+define an instance of the `Monoid` typeclass, and everything will
 continue working. This also applies with other "famous" libraries in
 the Haskell ecosystem, such as `bytestring` or `text`. What are you
-waiting for? There is a world full of `Monoid` out there, go and
+waiting for? There is a world full of _monoids_ out there, go and
 "mappend" them all!
 
 ## References
