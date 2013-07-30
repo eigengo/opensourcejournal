@@ -33,8 +33,8 @@ response.contentType = 'application/json'
 out << json
 ```
 
-Also for old school web pages there are *Groovy Server Pages* for HTML templating. 
-As in Java Server Pages you can use ```<% %>``` and ```<%= %>``` scriptlets 
+Also for old school web pages there are *Groovy Templates* for HTML templating. 
+As in for example Java Server Pages you can use ```<% %>``` and ```<%= %>``` scriptlets 
 to execute code such as conditions within the template. In addition you can use 
 ```$request.attribute``` or ```${request.attribute}``` to access objects from the request attributes map. 
 The usual workflow is pretty obvious -  in groovlet you fill the data and then you render them in the template.
@@ -75,7 +75,7 @@ get '/article/@year?/@month?/@day?/@title?',
                     forward: '/article.groovy'
 ```
 
-There is lot more options you can use in routing such as validation. To see more read [Flexible URL Routing section of Gaelyk Tutorial](http://gaelyk.appspot.com/tutorial/url-routing).
+There is lot more options you can use in routing such as validation. To see more read Flexible URL Routing section of Gaelyk Tutorial.
 
 ##Using platform services
 Gaelyk simplifies access to many underlying services such as mail, cache, datastore or search. 
@@ -187,14 +187,14 @@ def closestPosts = search.search {
 
 ##Creating Your Own Gaelyk Website
 There are currently at least two ways how to start developing your own website based on Gaelyk.
-For small sites you can try new tool called [Glide](http://glide-gae.appspot.com). 
+For small sites you can try new tool called Glide. 
 Glide excels in hiding all the complexity which can occur in traditional web application 
 and you should definitely give it a try even it doesn't support all the Gaelyk functionally yet. 
 In this article, we are going to show you the traditional process of creating new Gaelyk application 
 from the Gaelyk Template Project.
 
 ###Gaelyk Template Project
-You can download Gaelyk Template Project from the [Gaelyk website](http://gaelyk.appspot.com/download). 
+You can download Gaelyk Template Project from the Gaelyk website. 
 Gaelyk uses yet another great Groovy tool Gradle as a build system so 
 if you are familiar with Gradle you should quickly recognize template project structure. 
 Actually the folder structure is similar to default Maven structure as well. 
@@ -241,7 +241,7 @@ Example unit test you can find in ```src/test/groovy``` and simple *smoke* test 
 that the website is running you can find in ```src/functionalTest/groovy```.
 
 ###Running and deploying your website
-[Gradle GAE plugin](https://github.com/bmuschko/gradle-gae-plugin) used by Gaelyk Template Project 
+Gradle GAE plugin used by Gaelyk Template Project 
 provides all the tasks you need to run and deploy your application. 
 To run your website locally, use ```./gradlew gaeRun``` task, to upload your website to the cloud 
 use ```./gradlew gaeUpdate```.
@@ -250,9 +250,23 @@ There are no more configuration steps needed to get your website working
 in the local development environment other than having Java installed 
 and ```JAVA_HOME``` environmental variable set up. 
 The last mile is to upload your application to Google's servers. 
-You need to obtain your application identifier first. Visit [Google App Engine](http://www.appspot.com) website, 
+You need to obtain your application identifier first. Visit Google App Engine website, 
 sign up for the services and create new application. 
 Update the ```application``` tag in ```appengine-web.xml``` configuration file 
 and run the ```./gradlew gaeUpdate``` task. 
 When asked for your credentials supply the one from your Google account you have used to sign up for Google App Engine. 
 After deployment, the website will be available online at ```http://<your-app-id>.appspot.com```.
+
+## Summary
+
+We have covered very basic examples how to create and deploy your website using Gaelyk.
+For more examples and tutorial visit Gealyk's website or my blog Groovy in the Clouds.
+
+## References
+1. Gaelyk: a lightweight Groovy toolkit for Google App Engine Java by Guillaume Laforge http://gaelyk.appspot.com
+2. Groovy: Groovlets http://groovy.codehaus.org/Groovlets
+3. Groovy: Groovy Templates http://groovy.codehaus.org/Groovy+Templates
+4. Google App Engine https://developers.google.com/appengine/
+5. Gradle GAE Plugin by Benjamin Muschko https://github.com/bmuschko/gradle-gae-plugin
+6. Glide by Kunal Dabir http://glide-gae.appspot.com
+7. Groovy in the Clouds by Vladimir Orany http://vladimir.orany.cz
