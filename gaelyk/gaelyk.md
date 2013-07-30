@@ -148,9 +148,12 @@ assert WordBlogPost.count() == 0
 ```
 
 ###Adding search capability to your website
-Search is crucial for many web sites. For example in some traveler's blog you may want to perform search through the bodies and titles. Or sort the posts based on the distance to your current location. To do this, you need to add the your blog post entity to the search index as well. 
+Search is crucial for many web sites. For example in some traveler's blog you may want to perform search 
+through the bodies and titles. Or sort the posts based on the distance to your current location. 
+To do this, you need to add the your blog post entity to the search index as well. 
 
-Adding entity to the index
+######Listing 8. Adding entity to the index
+```groovy
 search.index("posts").put {
     document(id: "$blogPost.id") {
         author text: blogPost.author.fullName
@@ -161,28 +164,48 @@ search.index("posts").put {
         location geoPoint: [location.latitude, location.longitude]
     }
 }
+```
 
 Simple word search is just question of calling search method on given index:
 
-Simple word search
+######Listing 9. Simple word search
+```groovy
 def fultextResults = search.index("posts").search("Hello")
+```
 
 For advanced use cases you can use search DSL provided by Gaelyk:
 
-Find closest blog posts
+######Listing 10. Find closest blog posts
+```groovy
 def closestPosts = search.search {
     select ids
     from posts
-    sort asc by distance(loc, geopoint(lat,long)), defaultDistance
+    sort asc by distance(location, geopoint(lat,long)), defaultDistance
 }
+```
 
 
-Creating Your Own Gaelyk Website
-There are currently at least two ways how to start developing your own website based on Gaelyk. For small sites you can try new tool called Glide (http://glide-gae.appspot.com). Glide excels in hiding all the complexity which can occur in traditional web application and you should definitely give it a try even it doesn't support all the Gaelyk functionally yet. In this article, we are going to show you the traditional process of creating new Gaelyk application from the Gaelyk Template Project.
-Gaelyk Template Project
-You can download Gaelyk Template Project from the Gaelyk website (http://gaelyk.appspot.com/download). Gaelyk uses yet another great Groovy tool Gradle as a build system so if you are familiar with Gradle you should quickly recognize template project structure. Actually the folder structure is similar to default Maven structure as well. Common project sources are placed in src/main/groovy directory. Groovlets reside in src/main/webapp/WEB-INF/groovy and templates can be placed anywhere inside src/main/webapp but usually they are stored in WEB-INF/pages directory within the web application root. WEB-INF folder also contains some important files such as web.xml, appengine-web.xml or routes.groovy. 
+##Creating Your Own Gaelyk Website
+There are currently at least two ways how to start developing your own website based on Gaelyk.
+For small sites you can try new tool called [Glide](http://glide-gae.appspot.com). 
+Glide excels in hiding all the complexity which can occur in traditional web application 
+and you should definitely give it a try even it doesn't support all the Gaelyk functionally yet. 
+In this article, we are going to show you the traditional process of creating new Gaelyk application 
+from the Gaelyk Template Project.
 
-Gaelyk Template Project directory structure
+###Gaelyk Template Project
+You can download Gaelyk Template Project from the [Gaelyk website](http://gaelyk.appspot.com/download). 
+Gaelyk uses yet another great Groovy tool Gradle as a build system so 
+if you are familiar with Gradle you should quickly recognize template project structure. 
+Actually the folder structure is similar to default Maven structure as well. 
+Common project sources are placed in ```src/main/groovy``` directory. 
+Groovlets reside in ```src/main/webapp/WEB-INF/groovy``` 
+and templates can be placed anywhere inside ```src/main/webapp``` 
+but usually they are stored in ```WEB-INF/pages``` directory within the web application root. 
+```WEB-INF``` folder also contains some important files such as ```web.xml```, ```appengine-web.xml``` or ```routes.groovy```. 
+
+######Listing 11. Gaelyk Template Project directory structure
+```
 ├── build.gradle
 └── src
     ├── functionalTest
@@ -205,13 +228,31 @@ Gaelyk Template Project directory structure
     └── test
         └── groovy
             └── DatastoreGroovletSpec.groovy
+```
 
 
+To help you starting with your own project the template project already contains some example files 
+such as ```datetime.groovy``` which stores current date into request object 
+and forwards to the ```datetime.gtpl``` template which will render that information.
 
-To help you starting with your own project the template project already contains some example files such as datetime.groovy which stores current date into request object and forwards to the datetime.gtpl template which will render that information.
+Gaelyk provides good support for unit and functional testing. 
+Unit testing is based on brilliant Spock Framework and functional testing uses great Geb browser automation tool. 
+Example unit test you can find in ```src/test/groovy``` and simple *smoke* test checking 
+that the website is running you can find in ```src/functionalTest/groovy```.
 
-Gaelyk provides good support for unit and functional testing. Unit testing is based on brilliant Spock Framework and functional testing uses great Geb browser automation tool. Example unit test you can find in src/test/groovy and simple "smoke" test checking that the website is running you can find in src/functionalTest/groovy.
-Running and deploying your website
-Gradle GAE plugin (https://github.com/bmuschko/gradle-gae-plugin) used by Gaelyk Template Project provides all the tasks you need to run and deploy your application. To run your website locally, use ./gradlew gaeRun task, to upload your website to the cloud use ./gradlew gaeUpdate.
-There are no more configuration steps needed to get your website working in the local development environment other than having Java installed and JAVA_HOME environmental variable set up. 
-The last mile is to upload your application to Google's servers. You need to obtain your application identifier first. Visit Google App Engine (http://www.appspot.com) website, sign up for the services and create new application. Update the application tag in appengine-web.xml configuration file and run the ./gradlew gaeUpdate task. When asked for your credentials supply the one from your Google account you have used to sign up for Google App Engine. After deployment, the website will be available online at http://<your-app-id>.appspot.com.
+###Running and deploying your website
+[Gradle GAE plugin](https://github.com/bmuschko/gradle-gae-plugin) used by Gaelyk Template Project 
+provides all the tasks you need to run and deploy your application. 
+To run your website locally, use ```./gradlew gaeRun``` task, to upload your website to the cloud 
+use ```./gradlew gaeUpdate```.
+
+There are no more configuration steps needed to get your website working 
+in the local development environment other than having Java installed 
+and ```JAVA_HOME``` environmental variable set up. 
+The last mile is to upload your application to Google's servers. 
+You need to obtain your application identifier first. Visit [Google App Engine](http://www.appspot.com) website, 
+sign up for the services and create new application. 
+Update the ```application``` tag in ```appengine-web.xml``` configuration file 
+and run the ```./gradlew gaeUpdate``` task. 
+When asked for your credentials supply the one from your Google account you have used to sign up for Google App Engine. 
+After deployment, the website will be available online at ```http://<your-app-id>.appspot.com```.
