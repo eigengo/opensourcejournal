@@ -1,32 +1,55 @@
-Your Website in the Cloud with Gaelyk
+#Your Website in the Cloud with Gaelyk
 
-Gaelyk is lightweight toolkit for creating websites in the cloud easily. It can power your personal blog as well as serve millions of users a day. Thanks to underlying Google App Engine platform it really excels in situations when you have to deal with multi tenant databases, image manipulation, geospatial or text searches. Groovy as a language of choice on the other hand allows you to write less boilerplate and being more productive.
+Gaelyk is lightweight toolkit for creating websites in the cloud easily. 
+It can power your personal blog as well as serve millions of users a day. 
+Thanks to underlying Google App Engine platform it really excels in situations 
+when you have to deal with multi tenant databases, image manipulation, 
+geospatial or text searches. Groovy as a language of choice on the other hand allows you 
+to write less boilerplate and being more productive.
 
-Groovy websites with sugar
-Gaelyk builds on the top of standard Groovy support for writing websites. The basic unit of work is “groovlet” which is script handling requests to particular URL. The script has access to some objects such as request, response or map of request parameters. Gaelyk adds more bindings into the script such as datastore or user service.
+##Groovy Websites with Sugar
+Gaelyk builds on the top of standard Groovy support for writing websites. 
+The basic unit of work is *groovlet* which is script handling requests to particular URL. 
+The script has access to some objects such as request, response or map of request parameters. 
+Gaelyk adds more bindings into the script such as datastore or user service.
 
-Hello world groovlet - helloWorld.groovy
-out << “Hello World”
+######Listing 1. Hello world groovlet - helloWorld.groovy
+```groovy
+out << "Hello World"
+```
 
-To create simple “Hello World” website you place script into WEB-INF/groovy folder of web application directory. When you run the server your groovlet is executed when you access http://localhost:8080/helloWorld.groovy URL, assuming 8080 is your default server port.
+To create simple *Hello World* website you place script into ```WEB-INF/groovy``` folder of web application directory. 
+When you run the server your groovlet is executed when you access 
+```http://localhost:8080/helloWorld.groovy``` URL, assuming 8080 is your default server port.
 
-Of course you usually don’t want to render plain text in your application. In modern web pages you probably want to render JSON responses for your AJAX request. Groovy groovlets has built in JSON builder you can use to communicate with your client side JavaScript code.
+Of course you usually don’t want to render plain text in your application. 
+In modern web pages you probably want to render JSON responses for your AJAX request. 
+Groovy groovlets has built in JSON builder you can use to communicate with your client side JavaScript code.
 
-JSON groovlet - helloJson.groovy
-json(message: params.message ? “Hello $params.message” : “Hi!”)
-response.contentType = ‘application/json’
+######Listing 2. JSON groovlet - helloJson.groovy
+```groovy
+json(message: params.message ? "Hello $params.message" : "Hi!")
+response.contentType = 'application/json'
 out << json
+```
 
-Also for old school web pages there are “Groovy Server Pages” for HTML templating. As in Java Server Pages you can use <% %> and <%= %> scriptlets to execute code within the template. In addition you can use $request.attribute or ${request.attribute} to access objects from the request attributes map. The usual workflow is pretty obvious -  in groovlet you fill the data and then you render them in the template.
+Also for old school web pages there are *Groovy Server Pages* for HTML templating. 
+As in Java Server Pages you can use ```<% %>``` and ```<%= %>``` scriptlets 
+to execute code such as conditions within the template. In addition you can use 
+```$request.attribute``` or ```${request.attribute}``` to access objects from the request attributes map. 
+The usual workflow is pretty obvious -  in groovlet you fill the data and then you render them in the template.
 
-Hello world groovlet - helloWorldWithRequest.groovy
+######Listing 3. Hello world groovlet - helloWorldWithRequest.groovy
+```groovy
 request.message = params.message
-forward ‘/helloWorld.gtpl’
+forward '/helloWorld.gtpl'
+```
 
-Hello world template - helloWorld.gtpl
+######Listing 4. Hello world template - helloWorld.gtpl
+```jsp
 <html>
     <head>
-        <title><%= request.message ?: ‘Hello World’%></title>
+        <title><%= request.message ?: "Hello World" %></title>
     </head>
     <body>
         <% if(request.message) { %>
@@ -36,23 +59,35 @@ Hello world template - helloWorld.gtpl
         <% } %>
     </body>
 </html>
+```
 
-Having .groovy extension in the URL isn’t very good practise so Gaelyk adds yet another feature beside groovlets and templates to create SEO friendly URLs. In file routes.groovy, you define so called routes which maps particular URL to groovlets or templates. You declare HTTP method, URL pattern which may contain URL variables starting with ‘at’ sign (@), the destination and the action (forward or redirect)
+Having ```.groovy``` extension in the URL isn’t very good practise 
+so Gaelyk adds yet another feature beside groovlets and templates to create SEO friendly URLs. 
+In file ```WEB-INF/routes.groovy```, you define so called routes which maps particular URL to groovlets or templates.
+You declare HTTP method, URL pattern which may contain URL variables starting with *at* sign (```@```), 
+the destination and the action (forward or redirect).
 
-routes.groovy
-get ‘/’,            forward: ‘/helloWorld.groovy’
-get ‘/hello/@what’, forward: ‘/helloWorld.groovy?message=@what’
-get ‘/article/@year?/@month?/@day?/@title?’, 
-forward: "/article.groovy"
+######Listing 5. Routes definition - routes.groovy
+```groovy
+get '/',            forward: '/helloWorld.groovy'
+get '/hello/@what', forward: '/helloWorld.groovy?message=@what'
+get '/article/@year?/@month?/@day?/@title?', 
+                    forward: '/article.groovy'
+```
 
-There is lot more options you can use in routing such as validation. To see more visit official tutorial at http://gaelyk.appspot.com/tutorial/url-routing.
+There is lot more options you can use in routing such as validation. To see more read [Flexible URL Routing section of Gaelyk Tutorial](http://gaelyk.appspot.com/tutorial/url-routing).
 
-Using platform services
-Gaelyk simplifies access to many underlying services such as mail, cache, datastore or search. Let’s focus on the last two.
-Saving data
-Nearly every web application needs to store some data. Gaelyk reuses Google App Engine’s  term “entity” to to refer to objects stored into underlying datastore. Defining an entity is simple process of adding @Entity annotation to the plain old groovy object.
+##Using platform services
+Gaelyk simplifies access to many underlying services such as mail, cache, datastore or search. 
+Let’s focus on the last two.
 
-Example entity - WordBlogPost.groovy
+###Saving data
+Nearly every web application needs to store some data. Gaelyk reuses Google App Engine’s 
+term *entity* to to refer to objects stored into underlying datastore. 
+Defining an entity is simple process of adding ```@Entity``` annotation to the plain old groovy object.
+
+######Listing 6. Example entity - WordBlogPost.groovy
+```groovy
 import groovyx.gaelyk.datastore.*
 import com.google.appengine.api.datastore.*
 
@@ -65,12 +100,19 @@ import com.google.appengine.api.datastore.*
     String body
     GeoPoint location
 }
+```
 
-As Google App Engine’s default option for storing data is schemaless Google Cloud Datastore (aka BigTable). You need to pay attention to few details when using this service. If you’re going to sort or query using some entity property, you need to mark it as indexed using @Indexed annotation.
+As Google App Engine’s default option for storing data is schemaless Google Cloud Datastore (aka BigTable).
+You need to pay attention to few details when using this service. 
+If you’re going to sort or query using some entity property, 
+you need to mark it as indexed using ```@Indexed``` annotation.
 
-@Entity annotation is internally implemented Groovy AST transformation which adds several useful methods such as save(), delete(), count() and findAll() to the annotated class. In following example you can see these methods in action:
+```@Entity``` annotation is internally implemented Groovy AST transformation 
+which adds several useful methods such as ```save()```, ```delete()```, ```count()``` and ```findAll()```
+to the annotated class. In following example you can see these methods in action:
 
-Using entity methods
+######Listing 7. Using entity methods
+```groovy
 // create a new blog post
 def blogPost = new WordBlogPost(
     authorId: 1, 
@@ -103,8 +145,10 @@ blogPost.delete()
 
 // so we have no more blog posts
 assert WordBlogPost.count() == 0
-Adding search capability to your website
-Search is crucial for many web sites. For example in some traveler’s blog you may want to perform search through the bodies and titles. Or sort the posts based on the distance to your current location. To do this, you need to add the your blog post entity to the search index as well. 
+```
+
+###Adding search capability to your website
+Search is crucial for many web sites. For example in some traveler's blog you may want to perform search through the bodies and titles. Or sort the posts based on the distance to your current location. To do this, you need to add the your blog post entity to the search index as well. 
 
 Adding entity to the index
 search.index(“posts”).put {
