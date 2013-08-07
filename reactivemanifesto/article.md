@@ -1,8 +1,6 @@
 The Reactive Manifesto
 ----------------------
 
-[Sign the manifesto](http://www.reactivemanifesto.org/)
-
 ## The Need to Go Reactive
 
 Application requirements have changed dramatically in recent years. Only a few years ago a large application had tens of servers, seconds of response time, hours of offline maintenance and gigabytes of data. Today applications are deployed on everything from mobile devices to cloud-based clusters running thousands of multicore processors. Users expect millisecond response times and 100% uptime. Data needs are expanding into the petabytes.
@@ -104,7 +102,7 @@ The beauty of this model is that it is purely event-driven, based upon reactive 
 
 Interactive applications are real-time, engaging, rich and collaborative. Businesses create an open and ongoing dialog with their customers by welcoming them through interactive experiences. This makes them more efficient, creates a feel of being connected and equipped to solve problems and accomplish tasks. One example is Google Docs which enables users to edit documents collaboratively, in real-time — allowing them to see each other’s edits and comments live, as they are made.
 
-Users are empowered when they can interact with data that is transformed into meaningful information in real-time. Interactive applications make collaboration on this information inherent in every interface so people communicate more effectively and more often; this is deepened further by increasing the feedback granularity from traditional whole-page behavior down to a per-item level, e.g. in a single-page email web-client. Instantaneous social interactions over large distances are radically transforming how people engage with information and with each other. For instance, GitHub is revolutionizing developer collaboration through “Social Coding” with an interactive browser-based application and of course Twitter has profoundly changed the way news are spread.
+Users are empowered when they can interact with data that is transformed into meaningful information in real-time. Interactive applications make collaboration on this information inherent in every interface so people communicate more effectively and more often; this is deepened further by increasing the feedback granularity from traditional whole-page behavior down to a per-item level, e.g. in a single-page email web-client. Instantaneous social interactions over large distances are radically transforming how people engage with information and with each other. For instance, GitHub is revolutionizing developer collaboration through “Social Coding” with an interactive browser-based application and of course Twitter has profoundly changed the way news is spread.
 
 Build upon an event-driven foundation, reactive applications are well equipped to be interactive. Scalability is necessary to retain this property when the application becomes popular, and resilience ensures that its users will continually enjoy its function.
 
@@ -126,4 +124,4 @@ With this in mind it becomes apparent how the four qualities *event-driven*, *sc
 
 Reactive applications represent a balanced approach to addressing a wide range of contemporary challenges in software development. Building on an *event-driven*, message-based foundation, they provide the tools needed to ensure *scalability* and *resilience*. On top of this they support rich, real-time user *interactions*. We expect that a rapidly increasing number of systems will follow this blueprint in the years ahead.
 
-[Sign the manifesto](http://www.reactivemanifesto.org/)
+To sign the manifesto please visit http://www.reactivemanifesto.org.
