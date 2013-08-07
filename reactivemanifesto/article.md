@@ -67,9 +67,9 @@ Scalability also helps managing risk: providing too little hardware to keep up w
 
 ### Key Building Blocks
 
-An event-driven system based on asynchronous message-passing provides the foundation for scalability. It enables loose coupling between components and subsystems and thus makes it possible to scale out the system onto multiple nodes while retaining the same programming model with the same semantics. Adding more instances of a component increases the system’s capacity to process events. In terms of implementation there is no difference between scaling up by utilizing multiple cores or scaling out by utilizing more nodes in a datacenter or cluster. The topology of the application becomes a deployment decision which is expressed through configuration and/or adaptive runtime algorithms responding to application usage. This is what we call [location transparency](http://en.wikipedia.org/wiki/Location_transparency).
+An event-driven system based on asynchronous message-passing provides the foundation for scalability. It enables loose coupling between components and subsystems and thus makes it possible to scale out the system onto multiple nodes while retaining the same programming model with the same semantics. Adding more instances of a component increases the system’s capacity to process events. In terms of implementation there is no difference between scaling up by utilizing multiple cores or scaling out by utilizing more nodes in a datacenter or cluster. The topology of the application becomes a deployment decision which is expressed through configuration and/or adaptive runtime algorithms responding to application usage. This is what we call location transparency [Wikipedia:LT].
 
-It is important to understand that the goal is not to try to implement transparent distributed computing, distributed objects or RPC-style communication — this has been tried before and it has failed. Instead we need to *embrace the network* by representing it directly in the programming model through asynchronous message-passing. True scalability naturally involves distributed computing and with that inter-node communication which means traversing the network, that as we know is [inherently unreliable](http://aphyr.com/posts/288-the-network-is-reliable). It is therefore important to make the constraints, trade-offs and failure scenarios of network programming explicit in the programming model instead of hiding them behind leaky abstractions that try to “simplify” things. As a consequence it is equally important to provide programming tools which encapsulate common building blocks for solving the typical problems arising in a distributed environment — like mechanisms for achieving consensus or messaging abstractions which offer higher degrees of reliability.
+It is important to understand that the goal is not to try to implement transparent distributed computing, distributed objects or RPC-style communication — this has been tried before and it has failed. Instead we need to *embrace the network* by representing it directly in the programming model through asynchronous message-passing. True scalability naturally involves distributed computing and with that inter-node communication which means traversing the network, that as we know is inherently unreliable [Kingsbury:2013]. It is therefore important to make the constraints, trade-offs and failure scenarios of network programming explicit in the programming model instead of hiding them behind leaky abstractions that try to “simplify” things. As a consequence it is equally important to provide programming tools which encapsulate common building blocks for solving the typical problems arising in a distributed environment — like mechanisms for achieving consensus or messaging abstractions which offer higher degrees of reliability.
 
 ## Resilient
 
@@ -86,7 +86,7 @@ In a reactive application resilience is not an afterthought but part of the desi
 
 ### Key Building Blocks
 
-In order to *manage failure* we need a way to *isolate* it so it doesn’t spread to other healthy components, and to *observe* it so it can be managed from a safe point outside of the failed context. One pattern that comes to mind is the bulkhead pattern [McCallister:2009], illustrated by the picture, in which a system is built up from safe compartments so that if one of them fails the other ones are not affected. This prevents the classic problem of cascading failures [Wikipedia:CF] and allows the management of problems in isolation.
+In order to *manage failure* we need a way to *isolate* it so it doesn’t spread to other healthy components, and to *observe* it so it can be managed from a safe point outside of the failed context. One pattern that comes to mind is the bulkhead pattern [McCallister:2009], illustrated by the picture, in which a system is built up from safe compartments so that if one of them fails the other ones are not affected. This prevents the classic problem of cascading failures [Wikipedia:CF] and allows for the management of problems in isolation.
 
 ![fig 3 Bulkheads](images/tank.png)
 
@@ -128,5 +128,7 @@ To sign the manifesto please visit http://www.reactivemanifesto.org.
 
 ## References
 
+ * [Kingsbury:2013] - http://aphyr.com/posts/288-the-network-is-reliable
  * [McCallister:2009] - http://skife.org/architecture/fault-tolerance/2009/12/31/bulkheads.html
  * [Wikipedia:CF] - http://en.wikipedia.org/wiki/Cascading_failure
+ * [Wikipedia:LT] - http://en.wikipedia.org/wiki/Location_transparency
