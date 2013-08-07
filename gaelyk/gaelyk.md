@@ -2,7 +2,7 @@
 
 Gaelyk is lightweight toolkit for creating websites in the cloud easily. 
 It can power your personal blog as well as serve millions of users a day. 
-Thanks to underlying Google App Engine platform it really excels in situations 
+Thanks to the underlying Google App Engine (GAE) platform it really excels in situations 
 when you have to deal with multi tenant databases, image manipulation, 
 geospatial or text searches. Groovy as a language of choice on the other hand allows you 
 to write less boilerplate and being more productive.
@@ -20,7 +20,7 @@ out << "Hello World"
 
 To create simple *Hello World* website you place script into ```WEB-INF/groovy``` folder of web application directory. 
 When you run the server your groovlet is executed when you access 
-```http://localhost:8080/helloWorld.groovy``` URL, assuming 8080 is your default server port.
+```http://localhost:8080/helloWorld.groovy```, assuming 8080 is your default server port.
 
 Of course you usually don't want to render plain text in your application. 
 In modern web pages you probably want to render JSON responses for your AJAX request. 
@@ -37,7 +37,8 @@ Also for old school web pages there are *Groovy Templates* for HTML templating.
 As in for example Java Server Pages you can use ```<% %>``` and ```<%= %>``` scriptlets 
 to execute code such as conditions within the template. In addition you can use 
 ```$request.attribute``` or ```${request.attribute}``` to access objects from the request attributes map. 
-The usual workflow is pretty obvious -  in groovlet you fill the data and then you render them in the template.
+The usual workflow is pretty obvious -  in groovlet such as one in 
+the Listing 3. you fill the data and then you render them in the template as you can see in Listing 4.
 
 ######Listing 3. Hello world groovlet - helloWorldWithRequest.groovy
 ```groovy
@@ -194,8 +195,8 @@ In this article, we are going to show you the traditional process of creating ne
 from the Gaelyk Template Project.
 
 ###Gaelyk Template Project
-You can download Gaelyk Template Project from the Gaelyk website. 
-Gaelyk uses yet another great Groovy tool Gradle as a build system so 
+You can download the Gaelyk Template Project from the Gaelyk website. 
+The Template project uses a great Groovy tool called Gradle as its build system so
 if you are familiar with Gradle you should quickly recognize template project structure. 
 Actually the folder structure is similar to default Maven structure as well. 
 Common project sources are placed in ```src/main/groovy``` directory. 
@@ -236,9 +237,9 @@ such as ```datetime.groovy``` which stores current date into request object
 and forwards to the ```datetime.gtpl``` template which will render that information.
 
 Gaelyk provides good support for unit and functional testing. 
-Unit testing is based on brilliant Spock Framework and functional testing uses great Geb browser automation tool. 
-Example unit test you can find in ```src/test/groovy``` and simple *smoke* test checking 
-that the website is running you can find in ```src/functionalTest/groovy```.
+Unit testing is based on the brilliant Spock Framework and the functional testing uses great Geb browser automation tool. 
+An example unit test can be found within the ```src/test/groovy``` directory and simple *smoke* test checking 
+that the website is running properly can be found in ```src/functionalTest/groovy```.
 
 ###Running and deploying your website
 Gradle GAE plugin used by Gaelyk Template Project 
@@ -248,18 +249,18 @@ use ```./gradlew gaeUpdate```.
 
 There are no more configuration steps needed to get your website working 
 in the local development environment other than having Java installed 
-and ```JAVA_HOME``` environmental variable set up. 
+and the ```JAVA_HOME``` environmental variable set up. 
 The last mile is to upload your application to Google's servers. 
 You need to obtain your application identifier first. Visit Google App Engine website, 
-sign up for the services and create new application. 
+sign up for the services and create a new application. 
 Update the ```application``` tag in ```appengine-web.xml``` configuration file 
 and run the ```./gradlew gaeUpdate``` task. 
-When asked for your credentials supply the one from your Google account you have used to sign up for Google App Engine. 
+When prompted, provide the credentials of the Google account used to sign up for the Google App Engine.
 After deployment, the website will be available online at ```http://<your-app-id>.appspot.com```.
 
 ## Summary
 
-We have covered very basic examples how to create and deploy your website using Gaelyk.
+We have covered a very basic example of how to create and deploy your website using Gaelyk.
 For more examples and tutorial visit Gealyk's website or my blog Groovy in the Clouds.
 
 ## References
