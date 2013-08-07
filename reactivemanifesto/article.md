@@ -86,7 +86,7 @@ In a reactive application resilience is not an afterthought but part of the desi
 
 ### Key Building Blocks
 
-In order to *manage failure* we need a way to *isolate* it so it doesn’t spread to other healthy components, and to *observe* it so it can be managed from a safe point outside of the failed context. One pattern that comes to mind is the [bulkhead pattern](http://skife.org/architecture/fault-tolerance/2009/12/31/bulkheads.html), illustrated by the picture, in which a system is built up from safe compartments so that if one of them fails the other ones are not affected. This prevents the classic problem of [cascading failures]() and allows the management of problems in isolation.
+In order to *manage failure* we need a way to *isolate* it so it doesn’t spread to other healthy components, and to *observe* it so it can be managed from a safe point outside of the failed context. One pattern that comes to mind is the bulkhead pattern [McCallister:2009], illustrated by the picture, in which a system is built up from safe compartments so that if one of them fails the other ones are not affected. This prevents the classic problem of cascading failures [Wikipedia:CF] and allows the management of problems in isolation.
 
 ![fig 3 Bulkheads](images/tank.png)
 
@@ -128,4 +128,5 @@ To sign the manifesto please visit http://www.reactivemanifesto.org.
 
 ## References
 
-[cascading failures](http://en.wikipedia.org/wiki/Cascading_failure)
+ * [McCallister:2009] - http://skife.org/architecture/fault-tolerance/2009/12/31/bulkheads.html
+ * [Wikipedia:CF] - http://en.wikipedia.org/wiki/Cascading_failure
