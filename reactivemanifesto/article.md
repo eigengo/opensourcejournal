@@ -86,7 +86,7 @@ In a reactive application resilience is not an afterthought but part of the desi
 
 ### Key Building Blocks
 
-In order to *manage failure* we need a way to *isolate* it so it doesn’t spread to other healthy components, and to *observe* it so it can be managed from a safe point outside of the failed context. One pattern that comes to mind is the [bulkhead pattern](http://skife.org/architecture/fault-tolerance/2009/12/31/bulkheads.html), illustrated by the picture, in which a system is built up from safe compartments so that if one of them fails the other ones are not affected. This prevents the classic problem of [cascading failures](http://en.wikipedia.org/wiki/Cascading_failure) and allows the management of problems in isolation.
+In order to *manage failure* we need a way to *isolate* it so it doesn’t spread to other healthy components, and to *observe* it so it can be managed from a safe point outside of the failed context. One pattern that comes to mind is the [bulkhead pattern](http://skife.org/architecture/fault-tolerance/2009/12/31/bulkheads.html), illustrated by the picture, in which a system is built up from safe compartments so that if one of them fails the other ones are not affected. This prevents the classic problem of [cascading failures]() and allows the management of problems in isolation.
 
 ![fig 3 Bulkheads](images/tank.png)
 
@@ -125,3 +125,7 @@ With this in mind it becomes apparent how the four qualities *event-driven*, *sc
 Reactive applications represent a balanced approach to addressing a wide range of contemporary challenges in software development. Building on an *event-driven*, message-based foundation, they provide the tools needed to ensure *scalability* and *resilience*. On top of this they support rich, real-time user *interactions*. We expect that a rapidly increasing number of systems will follow this blueprint in the years ahead.
 
 To sign the manifesto please visit http://www.reactivemanifesto.org.
+
+## References
+
+[cascading failures](http://en.wikipedia.org/wiki/Cascading_failure)
