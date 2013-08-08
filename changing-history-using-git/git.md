@@ -109,13 +109,16 @@ Note that the commits containing the password file do still exist on the remote 
 
 Whether you've just run a filter branch or someone else has pushed, reset and then re-pushed a commit, sometimes your repository is going to get into a state that will mess with any collaborators you have. If someone changes history and then someone else who had the old version of history merges the new history they're doing to get some fairly tricky merge conflicts.
 
-The trick is to get your team to rebase instead of merge. If they `git rebase` it'll take the changed history and then replay their local changes on top of the new history. Sometimes a straightforward rebase will work if the changes are the same in their history and in the rewritten shared history, but if the changes are different, you get a "hard" situation where the rebase will try to replay similar changes from the old shared history. To be safe, it is best to `git rebase --onto` instead. Let's say you have made three local commits and want to keep those but on top of the new shared history. Let's assume we're working on a master branch. Start by getting the new shared history using a fetch, then rebase --onto:
+The trick is to get your team to rebase before merging. If they `git rebase` it'll take the changed history and then replay their local changes on top of the new history. Sometimes a straightforward rebase will work if the changes are the same in their history and in the rewritten shared history, but if the changes are different, you get a "hard" situation where the rebase will try to replay similar changes from the old shared history. To be safe, it is best to `git rebase --onto` instead. Let's say you have made some local commits on a branch called feature and want to keep those but on top of the new shared history. Let's assume we're working on a master branch. Start by getting the new shared history using a fetch, then rebase --onto:
 
 ######Listing 11. Rebasing onto changed shared history
     git fetch origin/master
-    git rebase --onto origin/master HEAD~3
+    git checkout master
+    git rebase --onto origin/master master feature
+    git reset --hard origin/master
 
-This will take the new history from origin/master and replay your three local changes on top of it, getting rid of your out of date version of the history and solving the problem.
+
+This will take the new history from origin/master and replay your local changes on top of it that are in your feature branch but not in your local master, getting rid of your out of date version of the history and solving the problem. It also resets master to origin/master so you now have the same shared history as everyone else. When you're done with the feature you can then `git merge feature` onto your master branch and then you can then push successfully to the remote server.
 
 #Summary
 
