@@ -4,8 +4,8 @@ Gaelyk is lightweight toolkit for creating websites in the cloud easily.
 It can power your personal blog as well as serve millions of users a day. 
 Thanks to the underlying Google App Engine (GAE) platform it really excels in situations 
 when you have to deal with multi tenant databases, image manipulation, 
-geospatial or text searches. Groovy as a language of choice on the other hand allows you 
-to write less boilerplate and being more productive.
+geospatial or text searches. Gaelyk is built on the Groovy language which makes you more productive 
+because it saves you time from having to write boilerplate code
 
 ##Groovy Websites with Sugar
 Gaelyk builds on the top of standard Groovy support for writing websites. 
