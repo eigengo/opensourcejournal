@@ -1,9 +1,7 @@
 #Changing History Using Git
 
 #Introduction
-
-If you're the person who fixes the repo when your team messes up, this article is for you. From removing sensitive information entirely from the repo to how to fix things when someone on your team resets or amends a shared commit, here are some advanced recipes for getting out of sticky
-situations - along with a review of the basics of changing history in git.
+From entirely removing sensitive information to fixing a reset/amended shared commit, here are some advanced recipes for getting out of sticky situations - along with a review of the basics of changing history in git.
 
 #Changing History
 
