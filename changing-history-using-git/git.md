@@ -109,9 +109,9 @@ Note that the commits containing the password file do still exist on the remote 
 
 Whether you've just run a filter-branch or someone else has pushed, reset and then force-pushed a commit, sometimes your repository is going to get into a state that will mess with any collaborators you have. If someone changes history and then someone else who had the old version of history merges the new history they're doing to get some fairly tricky merge conflicts.
 
-The trick is to get your team to rebase before merging upstream changes. If they `git rebase` it'll take the changed history and replay local changes on top of the new history. Sometimes a straightforward rebase will work if the changes are the same in their history and in the rewritten shared history, but if the changes are different, you get a "hard" situation where the rebase will try to replay similar changes from the old shared history. To be safe, it is best to `git rebase --onto` instead. Let's say you have made some local commits on a branch called _feature_ and want to keep those but on top of the new shared history.
+The trick is to get your team to rebase before merging upstream changes. If they `git rebase` it'll take the changed history and replay local changes on top of the new history. Sometimes a straightforward rebase will work if the changes are the same in their history and in the rewritten shared history, but if the changes are different, you get a "hard" situation where the rebase will try to replay similar changes from the old shared history. To be safe, it is best to execute a `git rebase --onto` instead. Let's say you have made some local commits on a branch called _feature_ and want to keep those but on top of the new shared history.
 
-Let's assume we're working on a master branch. Start by getting the new shared history using a fetch, then rebase --onto:
+Let's assume we're working on a master branch. Start by getting the new shared history using a `git fetch`, then execute a `git rebase --onto`:
 
 ######Listing 11. Rebasing onto changed shared history
     git fetch origin/master
