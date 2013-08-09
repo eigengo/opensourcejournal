@@ -88,7 +88,7 @@ Now you want to use the filter-branch command to purge the file from the repo's 
     'git rm --cached --ignore-unmatch <filepath>' \
     --prune-empty --tag-name-filter cat -- --all
 
-Replace <filepath> with the full path of the file that you want to remove (e.g. /misc/passwords.txt). This command will go through the history of every branch and tag changing any commit that included the password file and any commits after them.
+Replace `<filepath>` with the full path of the file that you want to remove (e.g. /misc/passwords.txt). This command will go through the history of every branch and tag changing any commit that included the password file and any commits after them.
 
 Now to share this, we've changed history, so we're going to have to force this to upload to our shared repo. Assuming a standard configuration with your main remote repo called "origin" you'd run:
 
