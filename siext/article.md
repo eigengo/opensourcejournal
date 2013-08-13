@@ -41,13 +41,13 @@ The discerning reader may be questioning why there's no consideration of a domai
 
 ## The art and craft of an extension
 
-Right, now it's time to start looking at code.  What is our custom component going to be?  For brevity, I'll show you a fairly simple component offering logging of messages accross multiple channels at a certain log level.  Unfortunately there's not the time nor space to talk you through a complete message auditing scenario.  
+Right, now it's time to start looking at code.  What is our custom component going to be?  Unfortunately there's not the time nor space to talk you through a complete message auditing scenario, one which I implemented for a client recently. Instead, for brevity, I'll show you a fairly simple component which offers logging of messages across multiple channels at a certain log level.  This will be achived using a `WireTap` to send messages to a logging `DirectChannel`.  Messages copied across to this channel will be handled with the SI component `LoggingHandler`.  This handler could easily be some other SI component or even our own custom bean.     
 
 Writing an extension to Spring Integration really isn't that difficult.  I suppose you could compare it with colouring, cutting and sticking.  In fact, let's stay with that analogy.
 
 ### Scissors
 
-First of all we need to cut the shape of component, to provide definition.  Our logging component will be used in the following way:
+First of all we need to cut the shape of component.  Our logging component will be used in the following ways:
 
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
@@ -61,8 +61,9 @@ First of all we need to cut the shape of component, to provide definition.  Our 
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-osj="http://skillsmatter.com/go/open-source-journal/schema/integration">
   
-  <int-osj:log channel-pattern="*.in" level="INFO" />
-  <int-osj:log channel-pattern="*.out" level="DEBUG" />
+  <int-osj:log />
+  <int-osj:log channel-pattern="*.in"  />
+  <int-osj:log channel-pattern="*.out" level="INFO" />
 
   ...
 
@@ -75,16 +76,13 @@ Notice the `int-osj` namespace?  That's our extension point for configuration.  
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns="http://skillsmatter.com/go/open-source-journal/schema/integration"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns:tool="http://www.springframework.org/schema/tool"
             targetNamespace="http://skillsmatter.com/go/open-source-journal/schema/integration"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-<xsd:import namespace="http://www.springframework.org/schema/tool" />
-
 <xsd:annotation>
-    <xsd:documentation><![CDATA[
+    <xsd:documentation>
 		Defines the configuration elements for the Spring Integration OSJ Adapter.
-	]]></xsd:documentation>
+    </xsd:documentation>
 </xsd:annotation>
 
 <xsd:element name="log">
@@ -125,11 +123,134 @@ Notice the `int-osj` namespace?  That's our extension point for configuration.  
 </xsd:schema>
 ```
 
+Excellent, we have now cut the definition of our custom component.  Notice the default values providing convention over configuration, while the element and attribute names along with their respective documentation satisfy our semantic configuration goal.
 
 
 ### Colouring-in
 
-Functionality
+Now to add the colour; the functionality.  Spring XML config is no use without a parser to register the appropriate beans in the Spring context.  As you might imagine, Spring have a defined interface for parsers: `BeanDefinitionParser`.  The entry point however, lies with the interface `NamespaceHandler`.  Spring Integration offer the `AbstractIntegrationNamespaceHandler` which cuts out some of the boilerplate.  The responsibility of the `NamespaceHandler` is to register beans for XML elements in a certain namespace.  It may register beans directly, but most often registers parsers which essentially allows it to delegate the bean registration work.  This aids modularity so we'll stick with that approach
+
+```java
+import org.springframework.integration.config.xml.AbstractIntegrationNamespaceHandler;
+
+/**
+ * Handles parsing of int-osj{http://skillsmatter.com/go/open-source-journal/schema/integration}
+ * namespace configuration elements.
+ */
+public class OsjNamespaceHandler extends AbstractIntegrationNamespaceHandler {
+
+    /**
+     * Initializer which registers bean definition parsers for elements in the namespace
+     */
+    @Override
+    public void init() {
+        registerBeanDefinitionParser("log", new ChannelLoggingBeanDefinitionParser());
+    }
+}
+```
+
+So now onto the class where the real work is done:
+
+```java
+/**
+ * Parser for the <code><log/></code> element in the
+ * int-osj{http://skillsmatter.com/go/open-source-journal/schema/integration} namespace
+ */
+public class ChannelLoggingBeanDefinitionParser implements BeanDefinitionParser {
+
+    /**
+     * Parses a log element into multiple bean definitions required for logging of messages.
+     * @param element the audited XML element
+     * @param parserContext provided by Spring
+     *                      and offers access to {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
+     * @return <code>null</code> because this parser registers multiple beans using the {@link ParserContext}
+     * rather than a single bean.
+     */
+    @Override
+    public BeanDefinition parse(final Element element, final ParserContext parserContext) {
+        final String logChannelName = createAndRegisterLogChannel(parserContext);
+        createAndRegisterLogWireTap(element, parserContext, logChannelName);
+        createAndRegisterLogMessageHandlerChain(element, parserContext, logChannelName);
+        return null;
+    }
+
+ 	// private methods
+
+ }
+```
+
+You can see the entry point to the parser is the overriden method `parse` which receives the XML element being processed by Spring as well as the parsing context.  You may notice the method returns `null`.  I'm certainly no advocate of returning `null` but unfortunately, the `BeanDefinitionParser` forces us down the route of returning _something_.  We'll look at each of the three private methods which I call out to but first let me show you the convenience method used to register beans via the `parserContext`:
+
+```java
+    /**
+     * Convenience method for registering a bean with a name via the parser context.
+     * @param parserContext the parser context which is used to register the bean
+     * @param beanDef the bean definition itself
+     * @return the generated name assigned to the bean
+     */
+    private String registerBeanDefinition(final ParserContext parserContext, final AbstractBeanDefinition beanDef) {
+        return BeanDefinitionReaderUtils.registerWithGeneratedName(beanDef, parserContext.getRegistry());
+    }
+```
+
+OK, let's take each of the three private methods in turn, starting with `createAndRegisterLogChannel()`.  This method creates a bean definition programmatically via a `DirectChannel` which is the default channel implementation in SI.  This is the channel to which we'll be able to send wire tapped messages.  The method's definition is simply:
+
+```java
+    private String createAndRegisterLogChannel(final ParserContext parserContext) {
+        BeanDefinitionBuilder logChannelBuilder = BeanDefinitionBuilder.genericBeanDefinition(DirectChannel.class);
+        return registerBeanDefinition(parserContext, logChannelBuilder.getBeanDefinition());
+    }
+```
+
+Notice we return a `String` which is the generated bean name for the log channel.  This comes in handy when we call the next two private methods:
+
+```java
+    private void createAndRegisterLogMessageHandlerChain(final Element element, final ParserContext parserContext, final String logChannelName) {
+        BeanDefinitionBuilder loggingHandlerBuilder = BeanDefinitionBuilder.genericBeanDefinition(LoggingHandler.class);
+        loggingHandlerBuilder.addConstructorArgValue(element.getAttribute("level"));
+        final String loggingHandlerBeanName = registerBeanDefinition(parserContext, loggingHandlerBuilder.getBeanDefinition());
+
+        ManagedList<RuntimeBeanReference> handlerRefList = new ManagedList<RuntimeBeanReference>();
+        handlerRefList.add(new RuntimeBeanReference(loggingHandlerBeanName));
+
+        BeanDefinitionBuilder chainBuilder = BeanDefinitionBuilder.genericBeanDefinition(MessageHandlerChain.class);
+        chainBuilder.addPropertyValue("handlers", handlerRefList);
+        final String logMessageHandlerChainBeanName = registerBeanDefinition(parserContext, chainBuilder.getBeanDefinition());
+
+        BeanDefinitionBuilder consumerEndpointbuilder = BeanDefinitionBuilder.genericBeanDefinition(ConsumerEndpointFactoryBean.class);
+        consumerEndpointbuilder.addPropertyReference("handler", logMessageHandlerChainBeanName);
+        consumerEndpointbuilder.addPropertyValue("inputChannelName", logChannelName);
+        BeanDefinitionReaderUtils.registerWithGeneratedName(consumerEndpointbuilder.getBeanDefinition(), parserContext.getRegistry());
+    }
+
+```
+
+There's a little bit more going on here.  We're setting up the handler chain for the log channel.  This is where we configure the `LoggingHandler`.  Notice we make use of the "level" attribute from our `<log/>` element here to set the logging level.  There's a little bit more lifting to do with regards to dealing with `BeanReference`'s.  One has to remember that Spring will peform post processing of the bean definitions to arrive at the final application context. If you're not familiar with this concept, I'll leave you with that as some homework.  Finally in this method, we need to tie the handler chain to the message channel.  That's achieved using a `ConsumerEndpointFactoryBean`.
+
+Finally, let's look at the private method to setup the wire tapping:
+
+```java
+    private void createAndRegisterLogWireTap(final Element element, final ParserContext parserContext, final String logChannelName) {
+        BeanDefinitionBuilder logWireTapBuilder = BeanDefinitionBuilder.genericBeanDefinition(WireTap.class);
+        logWireTapBuilder.addConstructorArgReference(logChannelName);
+        final String logWireTapBeanName = registerBeanDefinition(parserContext, logWireTapBuilder.getBeanDefinition());
+
+        BeanDefinitionBuilder logWireTapWrapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(GlobalChannelInterceptorWrapper.class);
+        logWireTapWrapperBuilder.addConstructorArgReference(logWireTapBeanName);
+        String patternAttribute = element.getAttribute("channel-pattern");
+        String[] patterns = StringUtils.trimAllWhitespace(patternAttribute).split(",");
+        logWireTapWrapperBuilder.addPropertyValue("patterns", patterns);
+        final String logWireTapWrapperBeanName = registerBeanDefinition(parserContext, logWireTapWrapperBuilder.getBeanDefinition());
+
+        BeanDefinitionBuilder postProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(GlobalChannelInterceptorBeanPostProcessor.class);
+        ManagedList<RuntimeBeanReference> globalInterceptors = new ManagedList<RuntimeBeanReference>();
+        globalInterceptors.add(new RuntimeBeanReference(logWireTapWrapperBeanName));
+        postProcessorBuilder.addConstructorArgValue(globalInterceptors);
+        registerBeanDefinition(parserContext, postProcessorBuilder.getBeanDefinition());
+    }
+```
+
+A `WireTap` definition is created with a reference to the log channel using the provided `logChannelName` parameter.  Then we make use of `GlobalChannelInterceptorWrapper` which allows us to define channels we would like to intercept.  Notice we make use of the `channel-pattern` element from our `<log/>` element here.  Finally, we use a `GlobalChannelInterceptorBeanPostProcessor` to marry intercepted channels with global interceptors.  Our global interceptor here is the `WireTap` class.
 
 ### Glue
 
