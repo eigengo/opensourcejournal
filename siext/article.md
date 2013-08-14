@@ -130,7 +130,7 @@ Excellent, we have now cut the definition of our custom component.  Notice the d
 
 ### Colouring-in
 
-Now to add the colour; the functionality.  Spring XML config is no use without a parser to register the appropriate beans in the Spring context.  As you might imagine, Spring have a defined interface for parsers: `BeanDefinitionParser`.  The entry point however, lies with the interface `NamespaceHandler`.  Spring Integration offer the `AbstractIntegrationNamespaceHandler` which cuts out some of the boilerplate.  The responsibility of the `NamespaceHandler` is to register beans for XML elements in a certain namespace.  It may register beans directly, but most often registers parsers which essentially allows it to delegate the bean registration work.  This aids modularity so we'll stick with that approach
+Now to add the colour; the functionality.  Spring XML config is no use without a parser to register the appropriate beans in the Spring context.  As you might imagine, Spring has a defined interface for parsers: `BeanDefinitionParser`.  The entry point however, lies with the interface `NamespaceHandler`.  Spring Integration offer the `AbstractIntegrationNamespaceHandler` which cuts out some of the boilerplate.  The responsibility of the `NamespaceHandler` is to register beans for XML elements in a certain namespace.  It may register beans directly, but most often registers parsers which essentially allows it to delegate the bean registration work.  This aids modularity so we'll stick with that approach
 
 ######Listing 3. The OSJ NamespaceHandler
 
