@@ -302,7 +302,7 @@ So there we have it!  Head over to https://github.com/eigengo/opensourcejournal/
 
 ## Summary
 
-The preceding text has described how to create a basic extension for Spring Integration.  We've discovered that an extension offers maximum re-use over alternative approaches which include shared code and resources as well as meaningful configuration.  I hope you'll be encouraged to try bundling your favoured patterns / components into an extension in the near future.  Always consider submitting your extension back to Spring via a github pull request.
+The preceding text has described how to create a basic extension for Spring Integration.  We've discovered that an extension offers maximum re-use over alternative approaches as well as meaningful configuration.  I hope you'll be encouraged to try bundling your favoured patterns / components into an extension in the near future.  Always consider submitting your extension back to Spring via a github pull request.
 
 Talking about the future, I think Spring Integration could do with adapters for ZIP handling and SNMP...
 
