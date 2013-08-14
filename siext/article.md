@@ -72,7 +72,7 @@ First of all we need to cut the shape of component.  Our logging component will 
 
 Notice the `int-osj` namespace?  That's our extension point for configuration.  Next up, we need a schema like so:
 
-######Listing 2. Example usage of the log component
+######Listing 2. Schema for the OSJ namespace
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
