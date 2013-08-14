@@ -268,7 +268,7 @@ A `WireTap` definition is created with a reference to the log channel using the 
 
 ### Glue
 
-Finally, to make our component an extension we need some glue.  That comes in the form of a resource bundle under the `META-INF` directory on the classpath which Spring will search for when parsing a new context.  This files that form the resource bundle are `spring.schemas`, `spring.handlers` and optionally `spring.tooling`.  These simple property files for our use case look like so:
+Finally, to make our component an extension we need some glue.  That comes in the form of a resource bundle under the `META-INF` directory on the classpath which Spring will search for when parsing a new context.  The files that form the resource bundle are `spring.schemas`, `spring.handlers` and optionally `spring.tooling`.  These simple property files for our use case look like so:
 
 ######Listing 9. spring.schemas file
 
