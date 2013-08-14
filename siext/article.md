@@ -41,7 +41,7 @@ The discerning reader may be questioning why there's no consideration of a domai
 
 ## The art and craft of an extension
 
-Right, now it's time to start looking at code.  What is our custom component going to be?  Unfortunately there's not the time nor space to talk you through a complete message auditing scenario, one which I implemented for a client recently. Instead, for brevity, I'll show you a fairly simple component which offers logging of messages across multiple channels at a certain log level.  This will be achived using a `WireTap` to send messages to a logging `DirectChannel`.  Messages copied across to this channel will be handled with the SI component `LoggingHandler`.  This handler could easily be some other SI component or even our own custom bean.     
+Right, now it's time to start looking at code.  What is our custom component going to be?  Unfortunately there's not the time nor space to talk you through a complete message auditing scenario, one which I implemented for a client recently. Instead, for brevity, I'll show you a fairly simple component which offers logging of messages across multiple channels at a certain log level.  This will be achived using a `WireTap` to send messages to a `DirectChannel`.  Messages copied across to this channel will be handled with the SI component `LoggingHandler`.  Of course, this handler could easily be some other SI component or even our own custom bean.     
 
 Writing an extension to Spring Integration really isn't that difficult.  I suppose you could compare it with colouring, cutting and sticking.  In fact, let's stay with that analogy.
 
@@ -200,6 +200,8 @@ You can see the entry point to the parser is the overriden method `parse` which 
         return BeanDefinitionReaderUtils.registerWithGeneratedName(beanDef, parserContext.getRegistry());
     }
 ```
+
+You'll notice that we're registering beans with generated names.  That may not suit every use case and you can indeed use a different method to register a bean with a name of your own.  However, caution should be applied here since you don't want to interfere with bean names that may be used elsewhere in the context.
 
 OK, let's take each of the three private methods in turn, starting with `createAndRegisterLogChannel()`.  This method creates a bean definition programmatically via a `DirectChannel` which is the default channel implementation in SI.  This is the channel to which we'll be able to send wire tapped messages.  The method's definition is simply:
 
