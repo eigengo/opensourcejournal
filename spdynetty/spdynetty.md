@@ -6,20 +6,18 @@ If you follow IT news and did not stumble upon my article by chance, then you pr
 
 Once the Browser starts tunneling (or aggregating) the HTTP request->response cycle into a **single already established connection**, the latency will be lower and thus request times are faster, as the client won't make separate connections for each CSS, JavaScript or Image-resource it requests from the Server. This is especially good for mobile clients which usually have huge latency compared to typical DSL lines at residential homes. Recent tests have shown, that SPDY is a not really that much faster, but reduces connection overhead, which comes in handy because SSL handshakes between servers and clients are expensive (for the server mostly).
 
-Another feature of SPDY is "push". The server can push data to the client before it gets "consumed". I choose this word wisely because i already tripped up in implementation errors on an earlier draft of this article. *cough* ;)
+Another feature of SPDY is "push". The server can push data to the client before it gets "consumed". I choose this word wisely because I already tripped up in implementation errors on an earlier draft of this article. The issue being that while WebSocket Frames trigger a handler on the Client, pushed SPDY frames do not. The only way to utilize pushed SPDY resources is to "use" them inside the Browser's context, for example ```<img src=../>``` or ```<script href=../>```. So "consume" feels like the right word here.
 
 # What's going to happen?
 
-We will be writing a simple SPDY-capable webserver and push some CSS and JavaScript before the browser consumes it.
-
-Since i am limited to 4000 words, my obvious language of choice will be Scala here, so i presume basic english knowledge in order to understand concepts like "map", "foreach" as well as "none" and "some". This also limits me in terms of what topic to write about and how detailed it can get, but lets just get started with some basic things like
+We will be writing a simple SPDY-capable webserver and push some CSS and JavaScript before the browser consumes it. As the title suggests, we will be using Scala throughout the Article, as i love it for the Syntax and Typesafety. 
 
 
 # Differences between SPDY and WebSockets
 
-Digging through the protocol specifications, one might see similarities to WebSockets, which is really a distant cousin, except for WebSocket's inability to transfer data as flexible as SPDY. On the other hand, WebSockets can be cleanly handled and started from JavaScript, which was not a design goal in SPDY. So it is virtually impossible to get a handle on a resource pushed via SPDY unless the browser "consumes" those pushed resources.
+Digging through the protocol specifications[1,2,3], one might see similarities to WebSockets, which is really a distant cousin, except for WebSocket's inability to transfer data as flexible as SPDY. On the other hand, WebSockets can be cleanly handled and started from JavaScript, which was not a design goal in SPDY. So it is virtually impossible to get a handle on a resource pushed via SPDY unless the browser "consumes" those pushed resources.
 
-To make it absolutely clear what i mean, WebSockets have a onMessage (or something similar) callback which gets triggered on every WebSocket received from a particular host. In SPDY there is **nothing** like it!
+To make it absolutely clear what I mean, WebSockets have an onMessage (or something similar) callback which gets triggered on every WebSocket received from a particular host. In SPDY there is **nothing** like it!
 
 To sum up, SPDY is practically a persistent tunnel for all HTTP/AJAX Requests, thus not requiring JavaScripts to be changed to make use of it. It is **not** a WebSocket replacement!
 
@@ -74,23 +72,23 @@ We simply create a class of our own extending Jetty's (**not Netty's**) NPN Prov
 ###### Listing 2. The NPN Provider
 
 ´´´scala
-class NpnServerProvider extends ServerProvider {
-  private final val default: String = "http/1.1"
-  private final val supported = List("spdy/2", "spdy/3", "http/1.1").asJava
+    class NpnServerProvider extends ServerProvider {
+      private final val default: String = "http/1.1"
+      private final val supported = List("spdy/2", "spdy/3", "http/1.1").asJava
 
-  private var protocol: String = _
-  def getSelectedProtocol = protocol
+      private var protocol: String = _
+      def getSelectedProtocol = protocol
 
-  override def protocolSelected(proto: String) {
-    protocol = proto
-  }
+      override def protocolSelected(proto: String) {
+        protocol = proto
+      }
 
-  override def unsupported() {
-    protocol = default
-  }
+      override def unsupported() {
+        protocol = default
+      }
 
-  override def protocols() = supported
-}
+      override def protocols() = supported
+    }
 ```
 
 
@@ -123,7 +121,7 @@ class SpdyOrHttpHandler extends SpdyOrHttpChooser(1024 * 1024, 1024 * 1024) {
 
 # Our HTTP Helper
 
-In order to craft valid HTTP responses, i am using a helper to make it short and sweet. This particular helper saved me countless lines. Since lots of the stuff is Option'al, it's pretty flexible to use. I use this helper almost on a daily basis.
+In order to craft valid HTTP responses, I am using a helper to make it short and sweet. This particular helper saved me countless lines. Since lots of the stuff is Option'al, it's pretty flexible to use. I use this helper almost on a daily basis.
 
 ###### Listing 4. Our HTTP Helper
 
@@ -324,8 +322,14 @@ class SpdyRequestHandler extends HttpRequestHandler {
 
 If you are already using WebSockets for your bi-directional communication, keep them as you've made a great choice. If your goal is to stream as much data down the pipeline to your clients while having to deal with little JavaScript, you should give this a try. Don't forget, you can still do AJAX-style long-polling over SPDY.
 
-Since i did not want to put the bogus SSL store in this article (becaus nobody wants to type a full-page Byte-Array), i've put the project on GitHub. The source-code can be found at https://github.com/fbettag/osj-2013-scala-netty4-spdy.
+Since I did not want to put the bogus SSL store in this article (becaus nobody wants to type a full-page Byte-Array), i've put the project on GitHub. The source-code can be found at https://github.com/fbettag/osj-2013-scala-netty4-spdy.
 
 
+# References
 
+[#1 - RFC6455 WebSockets](http://tools.ietf.org/html/rfc6455)
+
+[#2 - SPDY2](http://www.chromium.org/spdy/spdy-protocol/spdy-protocol-draft2)
+
+[#3 - SPDY3](http://www.chromium.org/spdy/spdy-protocol/spdy-protocol-draft3)
 
