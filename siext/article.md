@@ -3,7 +3,7 @@ Extending Spring Integration
 
 ## Abstract
 
-Spring Integration (SI) offers numerous adapters out of the box covering the most common integration needs from web services to messaging systems with databases aplenty inbetween. What happens though when a requirement falls outside of the default offering?  Beans I hear you say?!  True enough, one can easily write new components to handle such scenarios. Say, you could even throw together a library to share those magical beans.  However, there's an even better way; one which promotes more complete re-use along with semantic configuration markup and even the ability to standardise configuration of default SI components.  
+Spring Integration (SI) offers numerous adapters out of the box covering the most common integration needs from web services to messaging systems with databases aplenty inbetween. What happens though when a requirement falls outside of the default offering?  Beans I hear you say?!  True enough, one can easily write new components to handle such scenarios. Say, you could even throw together a library to share those magical beans.  However, there's an even better way; one which promotes more complete re-use along with semantic configuration markup and even the ability to standardise configuration of default SI components.  That way is a Spring Integration extension.  
 
 ## Intro
 
