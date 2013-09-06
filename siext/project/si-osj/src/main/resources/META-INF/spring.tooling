@@ -1,4 +1,4 @@
 # Tooling related information for the OSJ Spring Integration namespace
-http\://skillsmatter.com/osj/schema/integration@name=OSJ Spring Integration namespace
-http\://skillsmatter.com/osj/schema/integration@prefix=int-osj
-http\://skillsmatter.com/osj/schema/integration@icon=com/skillsmatter/osj/si/config/spring-integration-skillsmatter.gif
+http\://eigengo.org/osj/schema/integration@name=OSJ Spring Integration namespace
+http\://eigengo.org/osj/schema/integration@prefix=int-osj
+http\://eigengo.org/osj/schema/integration@icon=org/eigengo/osj/si/config/spring-integration-osj.gif

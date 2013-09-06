@@ -55,11 +55,11 @@ First of all we need to cut the shape of component.  Our logging component will 
 <?xml version='1.0' encoding='UTF-8'?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-osj="http://skillsmatter.com/osj/schema/integration"
+       xmlns:int-osj="http://eigengo.org/osj/schema/integration"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-        http://skillsmatter.com/osj/schema/integration http://skillsmatter.com/osj/schema/integration/spring-integration-osj-1.0.xsd">
+        http://eigengo.org/osj/schema/integration http://eigengo.org/osj/schema/integration/spring-integration-osj-1.0.xsd">
   
   <int-osj:log />
   <int-osj:log channel-pattern="*.in"  />
@@ -76,9 +76,9 @@ Notice the `int-osj` namespace?  That's our extension point for configuration.  
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://skillsmatter.com/osj/schema/integration"
+<xsd:schema xmlns="http://eigengo.org/osj/schema/integration"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://skillsmatter.com/osj/schema/integration"
+            targetNamespace="http://eigengo.org/osj/schema/integration"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
 
     <xsd:annotation>
@@ -138,7 +138,7 @@ Now to add the colour; the functionality.  Spring XML config is no use without a
 import org.springframework.integration.config.xml.AbstractIntegrationNamespaceHandler;
 
 /**
- * Handles parsing of int-osj{http://skillsmatter.com/osj/schema/integration}
+ * Handles parsing of int-osj{http://eigengo.org/osj/schema/integration}
  * namespace configuration elements.
  */
 public class OsjNamespaceHandler extends AbstractIntegrationNamespaceHandler {
@@ -160,7 +160,7 @@ So now onto the class where the real work is done:
 ```java
 /**
  * Parser for the <code><log/></code> element in the
- * int-osj{http://skillsmatter.com/osj/schema/integration} namespace
+ * int-osj{http://eigengo.org/osj/schema/integration} namespace
  */
 public class ChannelLoggingBeanDefinitionParser implements BeanDefinitionParser {
 
@@ -275,8 +275,8 @@ Finally, to make our component an extension we need some glue.  That comes in th
 ######Listing 9. spring.schemas file
 
 ```
-http\://skillsmatter.com/osj/schema/integration/spring-integration-osj-1.0.xsd=com/skillsmatter/osj/si/config/spring-integration-osj-1.0.xsd
-http\://skillsmatter.com/osj/schema/integration/spring-integration-osj.xsd=com/skillsmatter/osj/si/config/spring-integration-osj-1.0.xsd
+http\://eigengo.org/osj/schema/integration/spring-integration-osj-1.0.xsd=org/eigengo/osj/si/config/spring-integration-osj-1.0.xsd
+http\://eigengo.org/osj/schema/integration/spring-integration-osj.xsd=org/eigengo/osj/si/config/spring-integration-osj-1.0.xsd
 ```
 
 This file maps the schema reference used in Spring context files (think schemaLocation) to the actual location on the classpath.  We provide mappings for references with and without the version qualifier.
@@ -284,7 +284,7 @@ This file maps the schema reference used in Spring context files (think schemaLo
 ######Listing 10. spring.handlers file
 
 ```
-http\://skillsmatter.com/osj/schema/integration=com.skillsmatter.osj.si.config.OsjNamespaceHandler
+http\://eigengo.org/osj/schema/integration=org.eigengo.osj.si.config.OsjNamespaceHandler
 ```
 
 This file maps the namespace in which our components live to the class which can ultimately handle the parsing of the XML elements.
@@ -293,9 +293,9 @@ This file maps the namespace in which our components live to the class which can
 
 ```
 # Tooling related information for the OSJ Spring Integration namespace
-http\://skillsmatter.com/osj/schema/integration@name=OSJ Spring Integration namespace
-http\://skillsmatter.com/osj/schema/integration@prefix=int-osj
-http\://skillsmatter.com/osj/schema/integration@icon=com/skillsmatter/osj/si/config/spring-integration-skillsmatter.gif
+http\://eigengo.org/osj/schema/integration@name=OSJ Spring Integration namespace
+http\://eigengo.org/osj/schema/integration@prefix=int-osj
+http\://eigengo.org/osj/schema/integration@icon=org/eigengo/osj/si/config/spring-integration-osj.gif
 ```
 
 This optional file is used by tools (such as IDEs) to assign a friendly name and icon to the namespace.  Additionally, a prefix is defined as a suggested name for use in target XML files.
@@ -304,7 +304,7 @@ So there we have it!  Head over to https://github.com/eigengo/opensourcejournal/
 
 ## Summary
 
-The preceding text has described how to create a basic extension for Spring Integration.  We've discovered that an extension offers maximum re-use over alternative approaches as well as meaningful configuration.  I hope you'll be encouraged to try bundling your favoured patterns / components into an extension in the near future.  Always consider submitting your extension back to Spring via a github pull request.
+The preceding text has described how to create a basic extension for Spring Integration.  We've discovered that an extension offers maximum re-use over alternative approaches as well as the benefit of meaningful configuration.  I hope you'll be encouraged to try bundling your favoured patterns / components into an extension in the near future.  Always consider submitting your extension back to Spring via a github pull request.
 
 Talking about the future, I think Spring Integration could do with adapters for ZIP handling and SNMP...
 

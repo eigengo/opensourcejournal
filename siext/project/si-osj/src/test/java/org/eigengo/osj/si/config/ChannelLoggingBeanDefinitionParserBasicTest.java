@@ -1,4 +1,4 @@
-package com.skillsmatter.osj.si.config;
+package org.eigengo.osj.si.config;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

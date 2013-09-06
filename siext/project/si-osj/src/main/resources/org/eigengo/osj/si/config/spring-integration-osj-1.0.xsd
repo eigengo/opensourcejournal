@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://skillsmatter.com/osj/schema/integration"
+<xsd:schema xmlns="http://eigengo.org/osj/schema/integration"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://skillsmatter.com/osj/schema/integration"
+            targetNamespace="http://eigengo.org/osj/schema/integration"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
 
     <xsd:annotation>

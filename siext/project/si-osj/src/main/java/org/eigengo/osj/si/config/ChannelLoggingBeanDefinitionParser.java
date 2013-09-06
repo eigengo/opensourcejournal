@@ -1,7 +1,6 @@
-package com.skillsmatter.osj.si.config;
+package org.eigengo.osj.si.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -20,7 +19,7 @@ import org.w3c.dom.Element;
 
 /**
  * Parser for the <code><log/></code> element in the
- * int-osj{http://skillsmatter.com/osj/schema/integration} namespace
+ * int-osj{http://eigengo.org/osj/schema/integration} namespace
  */
 public class ChannelLoggingBeanDefinitionParser implements BeanDefinitionParser {
 

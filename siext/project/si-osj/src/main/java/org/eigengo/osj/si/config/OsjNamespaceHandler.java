@@ -1,9 +1,9 @@
-package com.skillsmatter.osj.si.config;
+package org.eigengo.osj.si.config;
 
 import org.springframework.integration.config.xml.AbstractIntegrationNamespaceHandler;
 
 /**
- * Handles parsing of int-osj{http://skillsmatter.com/osj/schema/integration}
+ * Handles parsing of int-osj{http://eigengo.org/osj/schema/integration}
  * namespace configuration elements.
  */
 public class OsjNamespaceHandler extends AbstractIntegrationNamespaceHandler {

@@ -1,8 +1,7 @@
-package com.skillsmatter.osj.si.config;
+package org.eigengo.osj.si.config;
 
 import org.springframework.integration.Message;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

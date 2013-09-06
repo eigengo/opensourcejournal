@@ -1,1 +1,1 @@
-http\://skillsmatter.com/osj/schema/integration=com.skillsmatter.osj.si.config.OsjNamespaceHandler
+http\://eigengo.org/osj/schema/integration=org.eigengo.osj.si.config.OsjNamespaceHandler
