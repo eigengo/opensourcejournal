@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://eigengo.org/osj/schema/integration"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://eigengo.org/osj/schema/integration"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <xsd:annotation>
+        <xsd:documentation>
+                Defines the configuration elements for the Spring Integration OSJ Adapter.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="log">
+        <xsd:annotation>
+            <xsd:documentation>
+                Enables logging of messages as they move between intercepted channels.
+
+                The channels to be intercepted are defined by the channel-pattern attribute.
+
+                The level at which the messages are logged is defined by the level attribute
+
+                A reasonable default value is provided for each attribute which should cover most integration scenarios.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="channel-pattern" type="xsd:string" use="optional" default="*.in, *.out, *.error">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Channel name(s) or patterns. To specify more than one channel use
+                        ',' 
+                        (e.g.,
+                        channel-name-pattern="input*, foo, bar")
+                        Default value is *.in, *.out, *.error
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="level" type="xsd:string" use="optional" default="DEBUG">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Level at which message should be logged, one of: FATAL, ERROR, WARN, INFO, DEBUG, TRACE
+                        Default value is DEBUG.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-osj="http://eigengo.org/osj/schema/integration"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+        http://eigengo.org/osj/schema/integration http://eigengo.org/osj/schema/integration/spring-integration-osj-1.0.xsd">
+
+    <context:annotation-config />
+    <context:component-scan base-package="org.eigengo.osj.si.config" />
+    <int:annotation-config/>
+
+    <int-osj:log channel-pattern="testRequest" level="INFO" />
+    <int-osj:log channel-pattern="testProcessRequest" level="DEBUG" />
+
+    <int:channel id="testRequest" />
+    <int:channel id="testProcessRequest" />
+    <int:publish-subscribe-channel id="testResponse" />
+
+    <int:enricher input-channel="testRequest" output-channel="testProcessRequest" request-payload-expression="payload + 'OK - PROCESS!'" />
+
+    <int:service-activator input-channel="testProcessRequest" ref="inMemoryMessageProcessorService" output-channel="testResponse" />
+
+    <int:logging-channel-adapter channel="testResponse" log-full-message="true" />
+
+</beans>
