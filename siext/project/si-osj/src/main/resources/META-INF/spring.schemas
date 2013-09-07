@@ -1,0 +1,2 @@
+http\://eigengo.org/osj/schema/integration/spring-integration-osj-1.0.xsd=org/eigengo/osj/si/config/spring-integration-osj-1.0.xsd
+http\://eigengo.org/osj/schema/integration/spring-integration-osj.xsd=org/eigengo/osj/si/config/spring-integration-osj-1.0.xsd
