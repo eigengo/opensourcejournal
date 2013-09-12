@@ -17,13 +17,11 @@ a system that obscures how it works, either intentionally, as with
 closed-source proprietary software, or as a trade-off to optimise
 performance, as with compiled binaries.
 
-Staying with the bicycle example, I've recently had to take my bike to
-get serviced, since the gears are sticking.  I recently had to take my
-bike to be serviced, since the gears were sticking. I was quoted £15 to
-have it fixed.  A similar fault occured in our car, but the garage
-quoted £750 to fix that. I'm sure that the smaller quote reflects how
-much easier it is to understand, access and adjust the internal workings
-of a bike.
+Staying with the bicycle example, I recently had to take my bike to be
+serviced, since the gears were sticking. I was quoted £15 to have it
+fixed.  A similar fault occured in our car, but the garage quoted £750
+to fix that. I'm sure that the smaller quote reflects how much easier it
+is to understand, access and adjust the internal workings of a bike.
 
 In the same way that free and open-source software has helped developers
 understand how programs work, we should extend the same idea to our
