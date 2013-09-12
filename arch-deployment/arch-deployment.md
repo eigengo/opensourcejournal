@@ -231,7 +231,7 @@ prod# systemctl start osj-app
 After a while the application should come up and a website will be available via port 8000, eg. http://www.example.com:8000. You can see what is going on during start-up with ```journalctl```.
 
 ```
-prod# journalctl -u osj-app
+prod# journalctl -u osj-app -f
 ```
 
 # Adding a reverse proxy
