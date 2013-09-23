@@ -170,7 +170,7 @@ We also want to handle SPDY as well as HTTP (one builds on the other), we need s
     override protected def createHttpRequestHandlerForSpdy() = new SpdyRequestHandler
 
     override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
-      ExceptionHandler.apply(ctx, cause).map(_.printStackTrace)
+      ExceptionHandler(ctx, cause).map(_.printStackTrace)
       if (ctx.channel().isOpen) ctx.close()
     }
   }
@@ -231,14 +231,14 @@ This request handler is used for both, SPDY and HTTP. The body-parameter include
     override def channelRead0(ctx: ChannelHandlerContext, msg: FullHttpRequest) {
       val keepAlive = HttpHeaders.isKeepAlive(msg)
       val body = "Served via HTTP. This means that your browser does not support SPDY."
-      val contenType = "text/html; charset=UTF-8"
-      val response = OurHttpResponse(msg.getProtocolVersion, OK, Some(body), Some(contenType), keepAlive)
+      val contentType = "text/html; charset=UTF-8"
+      val response = OurHttpResponse(msg.getProtocolVersion, OK, Some(body), Some(contentType), keepAlive)
       val future = ctx.channel().writeAndFlush(response)
       if (!keepAlive) future.addListener(ChannelFutureListener.CLOSE)
     }
 
     override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
-      ExceptionHandler.apply(ctx, cause).map(_.printStackTrace)
+      ExceptionHandler(ctx, cause).map(_.printStackTrace)
       //if (ctx.channel().isOpen) ctx.close()
     }
   }
@@ -359,8 +359,8 @@ Now here comes the real sugar, the pushContent method is specifically designed t
         SpdyHttpHeaders.Names.STREAM_ID -> currentStreamId.toString,
         SpdyHttpHeaders.Names.PRIORITY -> "0")
 
-      val contenType = "text/html; charset=UTF-8"
-      val response = OurHttpResponse(msg.getProtocolVersion, OK, Some(body.toString()), Some(contenType), false, headers)
+      val contentType = "text/html; charset=UTF-8"
+      val response = OurHttpResponse(msg.getProtocolVersion, OK, Some(body.toString()), Some(contentType), false, headers)
 
       println(response)
       println("---")
@@ -380,6 +380,8 @@ Now here comes the real sugar, the pushContent method is specifically designed t
   }
 
 ```
+
+One key thing about this implementation is, that we are writing multiple parts out to the Netty Channel and flush afterwards.
 
 # Final words
 
