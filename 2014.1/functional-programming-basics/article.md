@@ -57,7 +57,9 @@ The function call (integers) returns (1 2 3 4 5 6 ...).  OK, I know you’ve got
 
 Now, in our program, we can replace the function call (integers) with it’s value.  So the program simply becomes:
 
-	←	(take 25 (squares-of (1 2 3 4 5 6 ...)))
+```clojure
+(take 25 (squares-of (1 2 3 4 5 6 ...)))
+```
 
 Yes, I did that with copy and paste; and that’s also an important point.  Referential Transparency is the same as copying the value of a function call and pasting it right on top of that function call.
 
