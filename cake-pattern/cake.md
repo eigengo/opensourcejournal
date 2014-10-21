@@ -105,7 +105,7 @@ trait DefaultUserServiceComponent extends UserServiceComponent {
 ```
 There are a couple of interesting things happening here so we’ll walk through this bit by bit:
 
-* ``this: UserRepositoryComponent =>`` – This is the important bit and is called a self-type annotation, loosely speaking it means that this trait depends upon an implementation of the ``UserRepositoryComponent`` being injected. What this means is simple terms is that when we want to use/instantiate the ``DefaultUserServiceComponent``, we need to use the with keyword and specify an implementation of the ``UserRepositoryComponent``, which in this case would be  ``UserRepositoryJPAComponent``. This will be shown when we wire the whole thing together in the next step.
+* ``this: UserRepositoryComponent =>`` – This is the important bit and is called a self-type annotation, loosely speaking it means that this trait depends upon an implementation of the ``UserRepositoryComponent`` being injected. What this means in simple terms is that when we want to use/instantiate the ``DefaultUserServiceComponent``, we need to use the with keyword and specify an implementation of the ``UserRepositoryComponent``, which in this case would be  ``UserRepositoryJPAComponent``. This will be shown when we wire the whole thing together in the next step.
 * Hopefully the rest of the code should be pretty clear, we’re simply defining a class which implements the UserServiceComponent and defines implementations for the two methods – simply delegating the calls to the two classes defined in the ``UserRepositoryComponent`` which we now have access to thanks to the self-type annotation
 
 #Wiring everything up
